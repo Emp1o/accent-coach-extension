@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ЕГЭ PRO — Accent Coach</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="container wide">
+      <section class="hero-card slim">
+        <div>
+          <p class="eyebrow">Экзаменационный режим</p>
+          <h1>ЕГЭ PRO</h1>
+          <p class="hero-copy">Строгий режим: таймер, одна попытка, итоговая оценка и анализ слабых тем.</p>
+        </div>
+        <a class="pill-link" href="popup.html" target="_blank">Открыть тренажёр</a>
+      </section>
+
+      <section class="panel ege-toolbar">
+        <div class="ege-timer-box">
+          <span class="badge">таймер</span>
+          <strong id="egeTimer">10:00</strong>
+        </div>
+        <div class="ege-timer-box">
+          <span class="badge">режим</span>
+          <strong>1 попытка</strong>
+        </div>
+        <div class="ege-timer-box">
+          <span class="badge">заданий</span>
+          <strong id="egeMeta">0</strong>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <h2>Экзаменационный вариант</h2>
+          <span class="badge">как в тестах</span>
+        </div>
+        <form id="egeForm"></form>
+        <div class="actions compact">
+          <button id="submitEgeExamBtn" class="primary" type="button">Завершить экзамен</button>
+        </div>
+      </section>
+
+      <section id="egeResultPanel" class="panel hidden">
+        <div class="panel-header">
+          <h2>Итог экзамена</h2>
+          <span class="badge">результат</span>
+        </div>
+        <div id="egeSummary" class="muted"></div>
+        <div id="egeWeakTopics"></div>
+        <div id="egeDetails"></div>
+      </section>
+    </main>
+    <script src="ege_exam.js"></script>
+  </body>
+</html>

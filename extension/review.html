@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Карточка — Accent Coach</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="container wide">
+      <section class="hero-card slim">
+        <div>
+          <p class="eyebrow">Повторение</p>
+          <h1>Карточка</h1>
+          <p class="hero-copy">Нажми на карточку, чтобы перевернуть её и увидеть ответ.</p>
+        </div>
+        <a class="pill-link" href="popup.html" target="_blank">Открыть тренажёр</a>
+      </section>
+
+      <section class="review-shell panel">
+        <div id="reviewEmpty" class="muted" hidden>Сейчас нет карточек к повторению.</div>
+
+        <div id="reviewCard" class="flip-card">
+          <div class="flip-card-inner">
+            <button id="reviewFront" class="flip-face flip-front" type="button"></button>
+            <button id="reviewBack" class="flip-face flip-back" type="button"></button>
+          </div>
+        </div>
+
+        <div id="reviewMeta" class="muted"></div>
+        <section id="sessionSummary" class="panel" hidden>
+          <h2>Итог сессии</h2>
+          <div id="sessionSummaryBody" class="muted"></div>
+        </section>
+
+        <div class="actions">
+          <button id="rememberBtn" class="secondary" disabled>Помню</button>
+          <button id="forgetBtn" class="danger" disabled>Не помню</button>
+          <button id="nextBtn" class="ghost">Следующая карточка</button>
+        </div>
+      </section>
+    </main>
+    <script src="review.js"></script>
+  </body>
+</html>

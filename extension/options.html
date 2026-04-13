@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Настройки — Accent Coach</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="container wide">
+      <section class="hero-card slim">
+        <div>
+          <p class="eyebrow">Настройки тренажёра</p>
+          <h1>Настройки Accent Coach</h1>
+        </div>
+      </section>
+      <form id="settingsForm" class="form-grid panel">
+        <label>
+          Дополнительный URL API (необязательно)
+          <input name="apiBaseUrl" type="url" placeholder="Оставь пустым для локальной версии" />
+        </label>
+        <label>
+          Проверять карточки каждые (мин.)
+          <input name="reviewCheckMinutes" type="number" min="0.5" step="0.5" />
+        </label>
+        <label>
+          Стартовый интервал (мин.)
+          <input name="firstIntervalMinutes" type="number" min="1" step="1" />
+        </label>
+        <label>
+          После «Не помню» (мин.)
+          <input name="hardResetMinutes" type="number" min="1" step="1" />
+        </label>
+        <label>
+          После первого «Помню» (мин.)
+          <input name="secondIntervalMinutes" type="number" min="1" step="1" />
+        </label>
+        <label>
+          После второго «Помню» (мин.)
+          <input name="thirdIntervalMinutes" type="number" min="1" step="1" />
+        </label>
+        <label>
+          Дневная цель
+          <input name="dailyGoal" type="number" min="1" step="1" />
+        </label>
+        <label>
+          Карточек в одной сессии
+          <input name="reviewBatchSize" type="number" min="5" max="50" step="1" />
+        </label>
+        <label>
+          Включить всплывающую плашку (1/0)
+          <input name="overlayEnabled" type="number" min="0" max="1" step="1" />
+        </label>
+        <label>
+          Автосохранять слова из текста (1/0)
+          <input name="autoSaveProcessedWords" type="number" min="0" max="1" step="1" />
+        </label>
+        <label>
+          ЕГЭ режим (1/0)
+          <input name="examMode" type="number" min="0" max="1" step="1" />
+        </label>
+        <div class="actions full-row">
+          <button type="submit">Сохранить</button>
+          <button type="button" id="importBtn" class="secondary">Импортировать</button>
+        </div>
+      </form>
+      <input id="fileInput" type="file" accept="application/json" hidden />
+      <p id="status" class="muted"></p>
+    </main>
+    <script src="options.js"></script>
+  </body>
+</html>

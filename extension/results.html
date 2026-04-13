@@ -1,0 +1,37 @@
+
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Результат — Accent Coach</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="container wide">
+      <section class="hero-card slim">
+        <div>
+          <p class="eyebrow">Результат обработки</p>
+          <h1 id="pageTitle">Результат</h1>
+        </div>
+        <a class="pill-link" href="popup.html" target="_blank">Открыть тренажёр</a>
+      </section>
+      <section class="result-grid panel">
+        <div>
+          <h2 id="leftTitle">Исходный текст</h2>
+          <textarea id="originalText" rows="10" readonly></textarea>
+        </div>
+        <div>
+          <h2 id="rightTitle">Результат</h2>
+          <textarea id="accentedText" rows="10" readonly></textarea>
+        </div>
+      </section>
+      <section class="actions"><button id="copyBtn">Копировать результат</button></section>
+      <section class="two-col">
+        <section class="panel"><h2>Детали</h2><div id="resolvedWords"></div></section>
+        <section class="panel"><h2>Примечания</h2><div id="unresolvedWords" class="muted"></div></section>
+      </section>
+    </main>
+    <script src="results.js"></script>
+  </body>
+</html>

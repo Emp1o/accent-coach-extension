@@ -1,8 +1,0 @@
-services:
-  api:
-    build:
-      context: ./api
-    ports:
-      - "8001:8000"
-    volumes:
-      - ./api:/app

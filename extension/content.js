@@ -1,3 +1,4 @@
+var chrome = globalThis.chrome || globalThis.browser;
 function replaceSelectionText(newText) {
   const active = document.activeElement;
   if (active && (active.tagName === 'TEXTAREA' || (active.tagName === 'INPUT' && /^(text|search|url|tel|password|email)$/i.test(active.type)))) {

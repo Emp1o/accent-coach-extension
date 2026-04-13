@@ -1,3 +1,4 @@
+var chrome = globalThis.chrome || globalThis.browser;
 const searchInput = document.getElementById("searchInput");
 const searchResults = document.getElementById("searchResults");
 const accentInput = document.getElementById("accentInput");

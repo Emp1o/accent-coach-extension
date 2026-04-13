@@ -1,3 +1,4 @@
+var chrome = globalThis.chrome || globalThis.browser;
 const MENU_SAVE_WORD_ID = "save-russian-stress-word";
 const MENU_ACCENT_TEXT_ID = "accent-selected-russian-text";
 const MENU_PUNCTUATE_TEXT_ID = "punctuate-selected-russian-text";
@@ -13,7 +14,8 @@ const STORAGE_KEYS = {
   lastSearch: "lastSearch",
   trainingSession: "trainingSession",
   egeExamSession: "egeExamSession",
-  notificationSession: "notificationSession"
+  notificationSession: "notificationSession",
+  reminderSession: "reminderSession"
 };
 
 const DEFAULT_SETTINGS = {
@@ -138,6 +140,7 @@ chrome.notifications.onButtonClicked.addListener(async (notificationId, buttonIn
   if (!card) return;
 
   if (buttonIndex === 0) {
+    await chrome.notifications.clear('study_card');
     await openSingleCardTraining(card);
   } else {
     await snoozeCard(card.id, 30);
@@ -151,6 +154,7 @@ chrome.notifications.onClicked.addListener(async (notificationId) => {
   const session = data.notificationSession || {};
   const card = Array.isArray(session.cards) ? session.cards[0] : null;
   if (!card) return;
+  await chrome.notifications.clear('study_card');
   await openSingleCardTraining(card);
 });
 
@@ -174,6 +178,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   if (msg?.type === 'OPEN_REVIEW_CARD') return asyncHandle(openReviewCard(msg.cardId || null, msg.mode || 'all').then(()=>({ok:true})));
   if (msg?.type === 'OPEN_TRAINING_SESSION') return asyncHandle(openTrainingSession(msg.mode || 'all', Number(msg.count || 10)).then(()=>({ok:true})));
   if (msg?.type === 'GET_TRAINING_SESSION') return asyncHandle(getTrainingSession().then((session)=>({session})));
+  if (msg?.type === 'GET_REMINDER_SESSION') return asyncHandle(getReminderSession().then((session)=>({session})));
   if (msg?.type === 'OPEN_EGE_EXAM') return asyncHandle(openEgeExam().then(()=>({ok:true})));
   if (msg?.type === 'GET_EGE_EXAM_SESSION') return asyncHandle(getEgeExamSession().then((session)=>({session})));
   if (msg?.type === 'SUBMIT_EGE_EXAM') return asyncHandle(submitEgeExam(msg.answers || []).then((result)=>({result})));
@@ -621,11 +626,12 @@ async function getNotificationCandidate(preferDifficult = true) {
   return source[0] || null;
 }
 
+
 async function showSmartNotification(card, title = '📚 Повторим?') {
   if (!card) return { ok: false, reason: 'empty' };
-  const message = card.kind === 'punctuation'
-    ? (card.prompt || card.word || '')
-    : (card.word || '');
+  const isPunctuation = card.kind === 'punctuation';
+  const prompt = isPunctuation ? (card.prompt || card.word || '') : (card.word || '');
+  const subtitle = isPunctuation ? 'Открой карточку и выбери правильную пунктуацию.' : 'Открой карточку и проверь, куда падает ударение.';
 
   const session = { cards: [card], mode: 'single', count: 1, createdAt: Date.now() };
   await chrome.storage.local.set({ [STORAGE_KEYS.notificationSession]: session });
@@ -635,25 +641,31 @@ async function showSmartNotification(card, title = '📚 Повторим?') {
     type: 'basic',
     iconUrl: 'icons/icon128.png',
     title,
-    message,
+    message: `${prompt}
+${subtitle}`,
     buttons: [
-      { title: 'Показать карточку' },
-      { title: 'Позже' }
+      { title: 'Открыть карточку' },
+      { title: 'Через 30 минут' }
     ],
     priority: 2,
-    requireInteraction: true
+    requireInteraction: true,
+    contextMessage: 'Accent Coach'
   });
   return { ok: true, cardId: card.id };
 }
+
+
 
 async function openSingleCardTraining(card) {
   const session = { cards: [card], mode: 'single', count: 1, createdAt: Date.now() };
   await chrome.storage.local.set({
     [STORAGE_KEYS.notificationSession]: session,
-    [STORAGE_KEYS.trainingSession]: session
+    [STORAGE_KEYS.trainingSession]: session,
+    [STORAGE_KEYS.reminderSession]: { card, openedAt: Date.now(), source: 'notification' }
   });
-  await chrome.tabs.create({ url: chrome.runtime.getURL('training.html') });
+  await chrome.tabs.create({ url: chrome.runtime.getURL('reminder.html') });
 }
+
 
 async function snoozeCard(cardId, minutes = 30) {
   const cards = await getCards();
@@ -716,7 +728,7 @@ async function openReviewCard(cardId = null, mode = 'all') {
   await chrome.tabs.create({ url });
 }
 
-async function showBasicNotification(title, message) { await chrome.notifications.create({ type:'basic', iconUrl:'icons/icon128.png', title, message, priority:1 }); }
+async function showBasicNotification(title, message) { await chrome.notifications.create({ type:'basic', iconUrl:'icons/icon128.png', title, message, priority:1, contextMessage:'Accent Coach' }); }
 
 async function saveTrainingSession(session) {
   await chrome.storage.local.set({ [STORAGE_KEYS.trainingSession]: session });
@@ -725,6 +737,11 @@ async function saveTrainingSession(session) {
 async function getTrainingSession() {
   const data = await chrome.storage.local.get(STORAGE_KEYS.trainingSession);
   return data[STORAGE_KEYS.trainingSession] || { cards: [], mode: 'all', count: 0, createdAt: Date.now() };
+}
+
+async function getReminderSession() {
+  const data = await chrome.storage.local.get(STORAGE_KEYS.reminderSession);
+  return data[STORAGE_KEYS.reminderSession] || { card: null, openedAt: 0, source: 'notification' };
 }
 
 async function buildTrainingCards(mode = 'all', count = 10) {

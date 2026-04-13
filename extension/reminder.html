@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Карточка из напоминания — Accent Coach</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="reminder-shell">
+    <section class="hero-card slim">
+      <div>
+        <p class="eyebrow">Напоминание Accent Coach</p>
+        <h1>Быстрое повторение</h1>
+        <p class="hero-copy">Карточка открылась из уведомления. Пройди короткое повторение в том же стиле, что и тренировка.</p>
+      </div>
+      <a class="pill-link" href="cards.html" target="_blank">Все карточки</a>
+    </section>
+
+    <section class="reminder-topbar">
+      <div class="reminder-meta">
+        <span id="reminderType" class="badge">карточка</span>
+        <span class="badge">из уведомления</span>
+      </div>
+    </section>
+
+    <section class="training-card-wrap">
+      <article class="reminder-card">
+        <div class="training-side training-front">
+          <div id="reminderQuestionLabel" class="reminder-label">Задание</div>
+          <div id="reminderQuestion" class="reminder-question">Загрузка...</div>
+        </div>
+        <div class="training-side training-back hidden">
+          <div class="reminder-label">Ответ</div>
+          <div id="reminderAnswer" class="reminder-answer"></div>
+          <div id="reminderRule" class="muted training-rule"></div>
+        </div>
+      </article>
+
+      <div class="reminder-actions">
+        <button id="showReminderAnswerBtn" class="primary">Показать ответ</button>
+        <div id="reminderGradeActions" class="row hidden">
+          <button id="reminderForgetBtn" class="danger">❌ Не помню</button>
+          <button id="reminderRememberBtn" class="success">✅ Помню</button>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script src="reminder.js"></script>
+</body>
+</html>

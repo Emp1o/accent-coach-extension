@@ -1,3 +1,4 @@
+var chrome = globalThis.chrome || globalThis.browser;
 const form = document.getElementById("settingsForm");
 const statusEl = document.getElementById("status");
 const fileInput = document.getElementById("fileInput");

@@ -1,4 +1,3 @@
-var chrome = globalThis.chrome || globalThis.browser;
 const searchInput = document.getElementById("searchInput");
 const searchResults = document.getElementById("searchResults");
 const accentInput = document.getElementById("accentInput");
@@ -26,6 +25,13 @@ const reviewModeSelect = document.getElementById("reviewModeSelect");
 const editAccentOutputBtn = document.getElementById("editAccentOutputBtn");
 const saveAccentOutputBtn = document.getElementById("saveAccentOutputBtn");
 const claimChestBtn = document.getElementById("claimChestBtn");
+const actionStatus = document.getElementById("actionStatus");
+const stressCardStatus = document.getElementById("stressCardStatus");
+const accentTextCardStatus = document.getElementById("accentTextCardStatus");
+const punctuationCardStatus = document.getElementById("punctuationCardStatus");
+const favoriteWordStatus = document.getElementById("favoriteWordStatus");
+const accentFavoriteStatus = document.getElementById("accentFavoriteStatus");
+const punctuationFavoriteStatus = document.getElementById("punctuationFavoriteStatus");
 
 function switchTab(tab) {
   const accentActive = tab === 'accent';
@@ -52,8 +58,7 @@ function setPunctuationEditing(isEditing) {
 async function saveCurrentStressToCards() {
   if (!currentSearch?.word) await performSearch();
   if (!currentSearch?.word || !currentSearch?.stressed) return false;
-  await chrome.runtime.sendMessage({ type: "SAVE_STRESS_CARD", word: currentSearch.word, stressed: currentSearch.stressed, source: currentSearch.source || "manual_search", note: currentSearch.note || "Добавлено пользователем в карточки.", favorite: true });
-  searchResults.innerHTML += `<p>Слово добавлено в карточки для повторения.</p>`;
+  await chrome.runtime.sendMessage({ type: "SAVE_STRESS_CARD", word: currentSearch.word, stressed: currentSearch.stressed, source: currentSearch.source || "manual_search", note: currentSearch.note || "Добавлено пользователем в карточки.", favorite: false });
   await loadState();
   return true;
 }
@@ -65,7 +70,7 @@ async function loadState() {
   renderGamification(state);
   renderCards(state.cards);
   renderFavorites(state.favorites);
-  renderDue(state.dueCards);
+  renderDue(state.priorityReviewCards || state.dueCards || [], state.stats);
 
   const lastProcessed = await chrome.runtime.sendMessage({ type: "GET_LAST_PROCESSED_TEXT" });
   if (lastProcessed?.accentedText) {
@@ -86,7 +91,7 @@ async function loadState() {
 function renderStats(stats) {
   document.getElementById("stats").innerHTML = `
     <article class="stat-card"><strong>${stats.total}</strong><span>карточек всего</span></article>
-    <article class="stat-card"><strong>${stats.due}</strong><span>к повторению</span></article>
+    <article class="stat-card"><strong>${stats.weakCount ?? stats.due}</strong><span>слабых мест сейчас</span></article>
     <article class="stat-card"><strong>${stats.currentStreak}</strong><span>серия дней</span></article>
     <article class="stat-card"><strong>${stats.bestStreak}</strong><span>лучший стрик</span></article>
     <article class="stat-card"><strong>${stats.accuracy}%</strong><span>точность</span></article>
@@ -131,7 +136,7 @@ function renderGamification(bundle) {
   if (weakSpotsPanel) {
     const weak = g.weakSpots || [];
     weakSpotsPanel.innerHTML = weak.length
-      ? '<h3>Слабые места недели</h3>' + weak.map((w, idx) => `<div class="weak-item" style="animation-delay:${idx * 70}ms">• ${escapeHtml(w.label)} — ошибок: <strong>${w.forgets}</strong></div>`).join('')
+      ? '<h3>Слабые места недели</h3>' + weak.map((w, idx) => { const weakLabel = w.label || w.word || w.prompt || 'Карточка'; return `<div class="weak-item" style="animation-delay:${idx * 70}ms">• ${escapeHtml(weakLabel)} — ошибок: <strong>${w.forgets}</strong></div>`; }).join('')
       : '<p class="muted">На этой неделе слабые места ещё не накопились.</p>';
     if (trainWeakSpotsBtn) trainWeakSpotsBtn.disabled = !weak.length;
   }
@@ -202,13 +207,16 @@ function renderFavorites(cards) {
   root.innerHTML = cards.slice(0, 12).map((card) => cardMarkup(card, `<div class="actions compact"><button class="tiny secondary" data-grade="remember" data-word="${escapeHtml(card.id)}">Помню</button><button class="tiny danger" data-grade="forget" data-word="${escapeHtml(card.id)}">Не помню</button></div>`)).join("");
 }
 
-function renderDue(cards) {
+function renderDue(cards, stats = {}) {
   const root = document.getElementById("dueCards");
   if (!cards.length) {
-    root.innerHTML = `<p class="muted">Сейчас можно передохнуть — карточек к повторению нет.</p>`;
+    root.innerHTML = `<p class="muted">Сейчас нет ни слабых мест недели, ни карточек, которые срочно просятся в повторение.</p>`;
     return;
   }
-  root.innerHTML = cards.slice(0, 12).map((card) => cardMarkup(card, `<div class="actions compact"><button class="tiny secondary" data-grade="remember" data-word="${escapeHtml(card.id)}">Помню</button><button class="tiny danger" data-grade="forget" data-word="${escapeHtml(card.id)}">Не помню</button></div>`)).join("");
+  const intro = (stats.weakCount || 0) > 0
+    ? `<p class="mini-help">Здесь сначала показываются слабые места недели — карточки, по которым у тебя было больше всего ошибок за последние 7 дней.</p>`
+    : `<p class="mini-help">Слабых мест недели пока нет, поэтому здесь показана ближайшая очередь карточек к повторению.</p>`;
+  root.innerHTML = intro + cards.slice(0, 12).map((card) => cardMarkup(card, `<div class="actions compact"><button class="tiny secondary" data-grade="remember" data-word="${escapeHtml(card.id)}">Помню</button><button class="tiny danger" data-grade="forget" data-word="${escapeHtml(card.id)}">Не помню</button></div>`)).join("");
 }
 
 function renderSearch(data) {
@@ -254,16 +262,33 @@ function buildStressedWord(word, stressIndex) {
 }
 
 
+
+
 async function safeAction(action, okMessage) {
   try {
     const result = await action();
-    if (okMessage) alert(okMessage);
+    if (actionStatus && okMessage) actionStatus.textContent = okMessage;
     return result;
   } catch (error) {
     console.error(error);
-    alert('Не удалось выполнить действие. Попробуй перезагрузить расширение и проверь, что backend запущен.');
+    if (actionStatus) actionStatus.textContent = 'Не удалось выполнить действие. Перезагрузи расширение и попробуй ещё раз.';
     throw error;
   }
+}
+
+
+function showInlineStatus(node, message, variant = 'success') {
+  if (!node) return;
+  node.hidden = false;
+  node.className = `inline-status inline-status--${variant}`;
+  node.textContent = message;
+}
+
+function clearInlineStatus(node) {
+  if (!node) return;
+  node.hidden = true;
+  node.textContent = '';
+  node.className = 'inline-status';
 }
 
 function renderAccentBuilder() {
@@ -302,7 +327,7 @@ async function refreshAfterMutation() {
 }
 
 document.getElementById("reviewNowBtn").addEventListener("click", async () => {
-  await chrome.runtime.sendMessage({ type: "OPEN_REVIEW_CARD", mode: reviewModeSelect.value || "all" });
+  await chrome.runtime.sendMessage({ type: "OPEN_TRAINING_SESSION", mode: reviewModeSelect.value || "all", count: 10 });
   window.close();
 });
 
@@ -365,17 +390,44 @@ document.getElementById('saveAccentOverrideBtn').addEventListener('click', async
 
 
 saveStressCardBtn.addEventListener("click", async () => {
+  clearInlineStatus(stressCardStatus);
+  const word = (currentSearch?.word || searchInput.value || '').trim();
   await safeAction(async () => {
     await saveCurrentStressToCards();
     await loadState();
-  }, "Слово добавлено в карточки.");
+    showInlineStatus(
+      stressCardStatus,
+      `Карточка «${word}» сохранена. Если нажать ещё раз, запись обновится и останется в карточках.`,
+      'success'
+    );
+  }, "");
 });
 
 document.getElementById("saveFavoriteBtn").addEventListener("click", async () => {
+  clearInlineStatus(favoriteWordStatus);
   if (!currentSearch?.word) await performSearch();
   if (!currentSearch?.word) return;
-  await chrome.runtime.sendMessage({ type: "TOGGLE_FAVORITE", word: currentSearch.id || currentSearch.word, value: true });
-  await refreshAfterMutation();
+  await safeAction(async () => {
+    const alreadyFavorite = Boolean(currentSearch?.favorite);
+    if (!currentSearch?.stressed) return;
+    await chrome.runtime.sendMessage({
+      type: "SAVE_STRESS_CARD",
+      word: currentSearch.word,
+      stressed: currentSearch.stressed,
+      source: currentSearch.source || "manual_search",
+      note: currentSearch.note || "Добавлено пользователем в избранное.",
+      favorite: true
+    });
+    await chrome.runtime.sendMessage({ type: "TOGGLE_FAVORITE", word: currentSearch.id || currentSearch.word, value: true });
+    await refreshAfterMutation();
+    showInlineStatus(
+      favoriteWordStatus,
+      alreadyFavorite
+        ? `Слово «${currentSearch.word}» уже было в избранном. Карточка обновлена и останется в приоритете повторения.`
+        : `Слово «${currentSearch.word}» добавлено в избранное. Оно будет чаще попадать в слабые места и напоминания.`,
+      alreadyFavorite ? 'info' : 'success'
+    );
+  }, "");
 });
 
 document.getElementById("accentBtn").addEventListener("click", async () => {
@@ -385,19 +437,37 @@ document.getElementById("accentBtn").addEventListener("click", async () => {
 });
 
 saveAccentTextCardsBtn.addEventListener("click", async () => {
+  clearInlineStatus(accentTextCardStatus);
   await safeAction(async () => {
     const payload = await chrome.runtime.sendMessage({ type: "ACCENT_TEXT", text: accentInput.value, saveWords: true, favoriteWords: false });
     accentOutput.value = payload?.accentedText || "";
     const count = payload?.resolvedWords?.length || 0;
-    searchResults.innerHTML = `<p>В карточки добавлено слов: ${count}.</p>`;
     await loadState();
-  }, "Слова из текста добавлены в карточки.");
+    showInlineStatus(
+      accentTextCardStatus,
+      count > 0
+        ? `Слова из текста сохранены в карточки: ${count}. При повторном нажатии записи обновятся.`
+        : 'В тексте не найдено новых слов для карточек, но уже сохранённые записи можно обновлять повторным нажатием.',
+      count > 0 ? 'success' : 'info'
+    );
+  }, "");
 });
 
 document.getElementById("accentAndFavoriteBtn").addEventListener("click", async () => {
-  const payload = await chrome.runtime.sendMessage({ type: "ACCENT_TEXT", text: accentInput.value, saveWords: true, favoriteWords: true });
-  accentOutput.value = payload?.accentedText || "";
-  await loadState();
+  clearInlineStatus(accentFavoriteStatus);
+  await safeAction(async () => {
+    const payload = await chrome.runtime.sendMessage({ type: "ACCENT_TEXT", text: accentInput.value, saveWords: true, favoriteWords: true });
+    accentOutput.value = payload?.accentedText || "";
+    const count = payload?.resolvedWords?.length || 0;
+    await loadState();
+    showInlineStatus(
+      accentFavoriteStatus,
+      count > 0
+        ? `Слова из текста помечены как сложные: ${count}. Они будут чаще появляться в повторении, уведомлениях и слабых местах недели.`
+        : 'Сложные слова не найдены или уже были помечены раньше. Повторное нажатие обновляет их приоритет.',
+      count > 0 ? 'success' : 'info'
+    );
+  }, "");
 });
 
 document.getElementById("copyAccentedBtn").addEventListener("click", async () => {
@@ -470,19 +540,68 @@ document.getElementById('savePunctuationBtn').addEventListener('click', async ()
   const original = punctuationInput.value.trim();
   const corrected = punctuationOutput.value.trim();
   const manualRule = document.getElementById('manualRuleInput')?.value?.trim() || '';
+  const wasManuallyEdited = !punctuationOutput.readOnly || (lastPunctuationResult?.note || '').toLowerCase().includes('вручную') || corrected !== (lastPunctuationResult?.result || corrected);
   if (!original || !corrected) return;
+  clearInlineStatus(punctuationCardStatus);
+  if (wasManuallyEdited && !manualRule) {
+    showInlineStatus(
+      punctuationCardStatus,
+      'Предложение можно сохранить, но сначала обязательно впишите ниже своё правило. Если вы исправили запятые вручную, правило обязательно.',
+      'warning'
+    );
+    return;
+  }
   await safeAction(async () => {
     await chrome.runtime.sendMessage({
       type: 'SAVE_PUNCTUATION_CARD',
       originalText: original,
       correctedText: corrected,
       explanations: (lastPunctuationResult?.explanations || []).concat(manualRule ? ['Пользовательское правило: ' + manualRule] : []),
-      note: lastPunctuationResult?.note || 'Исправлено вручную пользователем',
+      note: manualRule ? 'Сохранено с пользовательским правилом' : (lastPunctuationResult?.note || 'Исправлено вручную пользователем'),
+      favorite: false
+    });
+    await loadState();
+    showInlineStatus(
+      punctuationCardStatus,
+      manualRule
+        ? 'Предложение сохранено в карточки вместе с вашим правилом. При повторном нажатии запись обновится.'
+        : 'Предложение сохранено в карточки, но если вы меняли запятые вручную, не забудьте ниже вписать своё правило.',
+      'success'
+    );
+  }, '');
+});
+
+document.getElementById('savePunctuationFavoriteBtn')?.addEventListener('click', async () => {
+  const original = punctuationInput.value.trim();
+  const corrected = punctuationOutput.value.trim();
+  const manualRule = document.getElementById('manualRuleInput')?.value?.trim() || '';
+  const wasManuallyEdited = !punctuationOutput.readOnly || (lastPunctuationResult?.note || '').toLowerCase().includes('вручную') || corrected !== (lastPunctuationResult?.result || corrected);
+  if (!original || !corrected) return;
+  clearInlineStatus(punctuationFavoriteStatus);
+  if (wasManuallyEdited && !manualRule) {
+    showInlineStatus(
+      punctuationFavoriteStatus,
+      'Сначала впишите своё правило ниже. Для вручную исправленных запятых правило обязательно.',
+      'warning'
+    );
+    return;
+  }
+  await safeAction(async () => {
+    await chrome.runtime.sendMessage({
+      type: 'SAVE_PUNCTUATION_CARD',
+      originalText: original,
+      correctedText: corrected,
+      explanations: (lastPunctuationResult?.explanations || []).concat(manualRule ? ['Пользовательское правило: ' + manualRule] : []),
+      note: manualRule ? 'Сохранено с пользовательским правилом' : (lastPunctuationResult?.note || 'Исправлено вручную пользователем'),
       favorite: true
     });
-    punctuationRules.innerHTML += `<p>Сохранено как карточка для повторения. Можно вручную менять текст в поле выше и сохранять исправленный вариант.</p>`;
     await loadState();
-  }, "Предложение добавлено в карточки.");
+    showInlineStatus(
+      punctuationFavoriteStatus,
+      'Предложение сделано приоритетным. Оно будет чаще появляться в уведомлениях, слабых местах недели и повторении.',
+      'success'
+    );
+  }, '');
 });
 
 document.getElementById('copyPunctuationBtn').addEventListener('click', async () => {
@@ -525,7 +644,7 @@ document.getElementById('testNotificationBtn').addEventListener('click', async (
 });
 
 document.getElementById('trainWeakSpotsBtn')?.addEventListener('click', async () => {
-  await chrome.runtime.sendMessage({ type: 'OPEN_REVIEW_CARD', mode: 'weak' });
+  await chrome.runtime.sendMessage({ type: 'OPEN_TRAINING_SESSION', mode: 'weak', count: 10 });
   window.close();
 });
 

@@ -6,16 +6,11 @@ function escapeHtml(value) {
     .replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;');
 }
-
 const egeForm = document.getElementById('egeForm');
 const egeMeta = document.getElementById('egeMeta');
 const egeTimer = document.getElementById('egeTimer');
-const egeResultPanel = document.getElementById('egeResultPanel');
-const egeSummary = document.getElementById('egeSummary');
-const egeWeakTopics = document.getElementById('egeWeakTopics');
-const egeDetails = document.getElementById('egeDetails');
 const submitBtn = document.getElementById('submitEgeExamBtn');
-
+const finishNotice = document.getElementById('egeFinishNotice');
 let session = null;
 let intervalId = null;
 let submitted = false;
@@ -37,17 +32,16 @@ function renderQuestions() {
       </div>
       <div class="muted">${escapeHtml(q.prompt)}</div>
       <div class="quiz-options">
-        ${(q.options || []).map((option) => `
+        ${(q.options || []).map((option, idx) => `
           <label class="option">
             <input type="radio" name="${escapeHtml(q.id)}" value="${escapeHtml(option)}" ${submitted ? 'disabled' : ''}/>
-            <span>${escapeHtml(option)}</span>
+            <span><strong>${String.fromCharCode(1040 + idx)}.</strong> ${escapeHtml(option)}</span>
           </label>
         `).join('')}
       </div>
     </article>
   `).join('');
 }
-
 function collectAnswers() {
   const questions = session?.questions || [];
   return questions.map((q) => {
@@ -55,71 +49,35 @@ function collectAnswers() {
     return { id: q.id, answer: checked ? checked.value : null };
   });
 }
-
 function formatLeft(seconds) {
   const safe = Math.max(0, seconds);
   const mm = String(Math.floor(safe / 60)).padStart(2, '0');
   const ss = String(safe % 60).padStart(2, '0');
   return `${mm}:${ss}`;
 }
-
+function stopTimer() {
+  if (intervalId) clearInterval(intervalId);
+  intervalId = null;
+}
 function disableForm() {
   submitted = true;
   submitBtn.disabled = true;
   document.querySelectorAll('#egeForm input').forEach((x) => x.disabled = true);
+  finishNotice?.classList.remove('hidden');
 }
-
-function renderWeakTopics(items) {
-  if (!items?.length) {
-    egeWeakTopics.innerHTML = '<p class="muted">Слабых тем не найдено — отличный результат.</p>';
-    return;
-  }
-  egeWeakTopics.innerHTML = `
-    <div class="panel-header"><h3>Слабые темы</h3><span class="badge danger">анализ</span></div>
-    ${items.map((item) => `
-      <article class="card-item">
-        <div class="card-main">
-          <strong>${escapeHtml(item.topic)}</strong>
-          <span>Ошибок: ${item.wrong} из ${item.total}</span>
-        </div>
-      </article>
-    `).join('')}
-  `;
+async function openResults() {
+  await chrome.tabs.create({ url: chrome.runtime.getURL('ege_results.html') });
 }
-
-function renderResult(result) {
-  disableForm();
-  egeResultPanel.classList.remove('hidden');
-  egeSummary.innerHTML = `
-    <p><strong>Правильно:</strong> ${result.correct} из ${result.total}</p>
-    <p><strong>Процент:</strong> ${result.scorePercent}%</p>
-    <p><strong>Оценка:</strong> ${escapeHtml(result.verdict)}</p>
-    <p><strong>Статус:</strong> ${result.expired ? 'Время вышло — экзамен завершён автоматически.' : 'Экзамен завершён.'}</p>
-  `;
-  renderWeakTopics(result.weakTopics || []);
-  egeDetails.innerHTML = (result.questions || []).map((q, i) => `
-    <article class="card-item">
-      <div class="card-main">
-        <strong>${i + 1}. ${escapeHtml(q.prompt)}</strong>
-        <span>${q.isCorrect ? '✅ Верно' : '❌ Ошибка'}</span>
-      </div>
-      <div class="card-meta">
-        <span>Твой ответ: ${escapeHtml(q.answer || 'нет ответа')} · Правильно: ${escapeHtml(q.correct)}</span>
-      </div>
-      <div class="muted">${escapeHtml(q.explanation || '')}</div>
-    </article>
-  `).join('');
-}
-
 async function finishExam(force = false) {
   if (submitted) return;
+  stopTimer();
+  disableForm();
   const answers = collectAnswers();
-  const response = await chrome.runtime.sendMessage({ type: 'SUBMIT_EGE_EXAM', answers });
-  renderResult(response.result || { questions: [], correct: 0, total: 0, scorePercent: 0, verdict: 'Нет данных', expired: force, weakTopics: [] });
+  await chrome.runtime.sendMessage({ type: 'SUBMIT_EGE_EXAM', answers, expired: force });
+  await openResults();
 }
-
 function startTimer() {
-  if (intervalId) clearInterval(intervalId);
+  stopTimer();
   const startedAt = Number(session?.startedAt || Date.now());
   const duration = Number(session?.durationSeconds || 600);
   const tick = () => {
@@ -127,25 +85,24 @@ function startTimer() {
     const left = duration - elapsed;
     egeTimer.textContent = formatLeft(left);
     if (left <= 0) {
-      clearInterval(intervalId);
+      stopTimer();
       finishExam(true);
     }
   };
   tick();
   intervalId = setInterval(tick, 1000);
 }
-
 async function loadExam() {
   const response = await chrome.runtime.sendMessage({ type: 'GET_EGE_EXAM_SESSION' });
   session = response?.session || { questions: [] };
-  if (session?.submittedAt && session?.result) submitted = true;
+  submitted = Boolean(session?.submittedAt && session?.result);
   renderQuestions();
   if (submitted) {
-    renderResult(session.result);
+    disableForm();
+    egeTimer.textContent = '00:00';
   } else {
     startTimer();
   }
 }
-
 submitBtn.addEventListener('click', () => finishExam(false));
 loadExam();

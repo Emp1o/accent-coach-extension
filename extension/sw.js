@@ -1,4 +1,3 @@
-var chrome = globalThis.chrome || globalThis.browser;
 const MENU_SAVE_WORD_ID = "save-russian-stress-word";
 const MENU_ACCENT_TEXT_ID = "accent-selected-russian-text";
 const MENU_PUNCTUATE_TEXT_ID = "punctuate-selected-russian-text";
@@ -14,8 +13,7 @@ const STORAGE_KEYS = {
   lastSearch: "lastSearch",
   trainingSession: "trainingSession",
   egeExamSession: "egeExamSession",
-  notificationSession: "notificationSession",
-  reminderSession: "reminderSession"
+  notificationSession: "notificationSession"
 };
 
 const DEFAULT_SETTINGS = {
@@ -140,7 +138,6 @@ chrome.notifications.onButtonClicked.addListener(async (notificationId, buttonIn
   if (!card) return;
 
   if (buttonIndex === 0) {
-    await chrome.notifications.clear('study_card');
     await openSingleCardTraining(card);
   } else {
     await snoozeCard(card.id, 30);
@@ -154,7 +151,6 @@ chrome.notifications.onClicked.addListener(async (notificationId) => {
   const session = data.notificationSession || {};
   const card = Array.isArray(session.cards) ? session.cards[0] : null;
   if (!card) return;
-  await chrome.notifications.clear('study_card');
   await openSingleCardTraining(card);
 });
 
@@ -175,13 +171,13 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   if (msg?.type === 'TOGGLE_FAVORITE') return asyncHandle(toggleFavorite(msg.word, msg.value));
   if (msg?.type === 'GRADE_CARD') return asyncHandle(gradeCard(msg.word, msg.result).then(()=>({ok:true})));
   if (msg?.type === 'GET_REVIEW_CARD') return asyncHandle(getReviewCard(msg.cardId || null));
-  if (msg?.type === 'OPEN_REVIEW_CARD') return asyncHandle(openReviewCard(msg.cardId || null, msg.mode || 'all').then(()=>({ok:true})));
+  if (msg?.type === 'OPEN_REVIEW_CARD') return asyncHandle(openTrainingSession(msg.mode || 'all', Number(msg.count || 10)).then(()=>({ok:true})));
   if (msg?.type === 'OPEN_TRAINING_SESSION') return asyncHandle(openTrainingSession(msg.mode || 'all', Number(msg.count || 10)).then(()=>({ok:true})));
   if (msg?.type === 'GET_TRAINING_SESSION') return asyncHandle(getTrainingSession().then((session)=>({session})));
-  if (msg?.type === 'GET_REMINDER_SESSION') return asyncHandle(getReminderSession().then((session)=>({session})));
   if (msg?.type === 'OPEN_EGE_EXAM') return asyncHandle(openEgeExam().then(()=>({ok:true})));
   if (msg?.type === 'GET_EGE_EXAM_SESSION') return asyncHandle(getEgeExamSession().then((session)=>({session})));
-  if (msg?.type === 'SUBMIT_EGE_EXAM') return asyncHandle(submitEgeExam(msg.answers || []).then((result)=>({result})));
+  if (msg?.type === 'GET_EGE_EXAM_RESULT') return asyncHandle(getEgeExamResult().then((result)=>({result})));
+  if (msg?.type === 'SUBMIT_EGE_EXAM') return asyncHandle(submitEgeExam(msg.answers || [], Boolean(msg.expired)).then((result)=>({result})));
 
   if (msg?.type === 'OPEN_CARDS_PAGE') return asyncHandle(openCardsPage().then(()=>({ok:true})));
   if (msg?.type === 'OPEN_RESULTS_PAGE') return asyncHandle(openResultsPage(msg.view || 'accent').then(()=>({ok:true})));
@@ -506,19 +502,22 @@ async function claimDailyChest() {
   const fresh = await getProfile();
   return { ok: true, xp: fresh.xp, level: fresh.level };
 }
+
 function weakSpotsForWeek(cards) {
-  const weekAgo = Date.now() - 7*24*60*60*1000;
-  return cards.map(card => {
-    const history = Array.isArray(card.reviewHistory) ? card.reviewHistory : [];
-    const recent = history.filter(x => (x.at || 0) >= weekAgo);
-    const forgets = recent.filter(x => x.result === 'forget').length;
-    return { card, forgets };
-  }).filter(x => x.forgets > 0).sort((a,b) => b.forgets - a.forgets).slice(0,5).map(x => ({
-    id: x.card.id,
-    kind: x.card.kind,
-    label: x.card.kind === 'punctuation' ? (x.card.prompt || x.card.word) : x.card.word,
-    forgets: x.forgets
-  }));
+  const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+  return cards
+    .map((card) => {
+      const history = Array.isArray(card.reviewHistory) ? card.reviewHistory : [];
+      const recent = history.filter((x) => (x.at || 0) >= weekAgo);
+      const forgets = recent.filter((x) => x.result === 'forget').length;
+      return { ...card, forgets };
+    })
+    .filter((card) => card.forgets > 0)
+    .sort((a, b) => {
+      if (b.forgets !== a.forgets) return b.forgets - a.forgets;
+      return Number(a.dueAt || 0) - Number(b.dueAt || 0);
+    })
+    .slice(0, 10);
 }
 function missionsFromState(profile, cards, settings) {
   const rememberedToday = Number(profile.rememberedToday || 0);
@@ -626,12 +625,11 @@ async function getNotificationCandidate(preferDifficult = true) {
   return source[0] || null;
 }
 
-
 async function showSmartNotification(card, title = '📚 Повторим?') {
   if (!card) return { ok: false, reason: 'empty' };
-  const isPunctuation = card.kind === 'punctuation';
-  const prompt = isPunctuation ? (card.prompt || card.word || '') : (card.word || '');
-  const subtitle = isPunctuation ? 'Открой карточку и выбери правильную пунктуацию.' : 'Открой карточку и проверь, куда падает ударение.';
+  const message = card.kind === 'punctuation'
+    ? (card.prompt || card.word || '')
+    : (card.word || '');
 
   const session = { cards: [card], mode: 'single', count: 1, createdAt: Date.now() };
   await chrome.storage.local.set({ [STORAGE_KEYS.notificationSession]: session });
@@ -641,31 +639,25 @@ async function showSmartNotification(card, title = '📚 Повторим?') {
     type: 'basic',
     iconUrl: 'icons/icon128.png',
     title,
-    message: `${prompt}
-${subtitle}`,
+    message,
     buttons: [
-      { title: 'Открыть карточку' },
-      { title: 'Через 30 минут' }
+      { title: 'Показать карточку' },
+      { title: 'Позже' }
     ],
     priority: 2,
-    requireInteraction: true,
-    contextMessage: 'Accent Coach'
+    requireInteraction: true
   });
   return { ok: true, cardId: card.id };
 }
-
-
 
 async function openSingleCardTraining(card) {
   const session = { cards: [card], mode: 'single', count: 1, createdAt: Date.now() };
   await chrome.storage.local.set({
     [STORAGE_KEYS.notificationSession]: session,
-    [STORAGE_KEYS.trainingSession]: session,
-    [STORAGE_KEYS.reminderSession]: { card, openedAt: Date.now(), source: 'notification' }
+    [STORAGE_KEYS.trainingSession]: session
   });
-  await chrome.tabs.create({ url: chrome.runtime.getURL('reminder.html') });
+  await chrome.tabs.create({ url: chrome.runtime.getURL('training.html') });
 }
-
 
 async function snoozeCard(cardId, minutes = 30) {
   const cards = await getCards();
@@ -728,7 +720,7 @@ async function openReviewCard(cardId = null, mode = 'all') {
   await chrome.tabs.create({ url });
 }
 
-async function showBasicNotification(title, message) { await chrome.notifications.create({ type:'basic', iconUrl:'icons/icon128.png', title, message, priority:1, contextMessage:'Accent Coach' }); }
+async function showBasicNotification(title, message) { await chrome.notifications.create({ type:'basic', iconUrl:'icons/icon128.png', title, message, priority:1 }); }
 
 async function saveTrainingSession(session) {
   await chrome.storage.local.set({ [STORAGE_KEYS.trainingSession]: session });
@@ -737,11 +729,6 @@ async function saveTrainingSession(session) {
 async function getTrainingSession() {
   const data = await chrome.storage.local.get(STORAGE_KEYS.trainingSession);
   return data[STORAGE_KEYS.trainingSession] || { cards: [], mode: 'all', count: 0, createdAt: Date.now() };
-}
-
-async function getReminderSession() {
-  const data = await chrome.storage.local.get(STORAGE_KEYS.reminderSession);
-  return data[STORAGE_KEYS.reminderSession] || { card: null, openedAt: 0, source: 'notification' };
 }
 
 async function buildTrainingCards(mode = 'all', count = 10) {
@@ -769,6 +756,19 @@ async function saveEgeExamSession(session) {
   await chrome.storage.local.set({ [STORAGE_KEYS.egeExamSession]: session });
 }
 
+async function getEgeExamResult() {
+  const data = await chrome.storage.local.get(STORAGE_KEYS.egeExamResult);
+  return data[STORAGE_KEYS.egeExamResult] || null;
+}
+
+async function saveEgeExamResult(result) {
+  await chrome.storage.local.set({ [STORAGE_KEYS.egeExamResult]: result });
+}
+
+async function openEgeExamResultsPage() {
+  await chrome.tabs.create({ url: chrome.runtime.getURL('ege_results.html') });
+}
+
 async function getEgeExamSession() {
   const data = await chrome.storage.local.get(STORAGE_KEYS.egeExamSession);
   return data[STORAGE_KEYS.egeExamSession] || {
@@ -781,6 +781,7 @@ async function getEgeExamSession() {
   };
 }
 
+
 function buildStressOptions(stressed) {
   const clean = stressed.replaceAll('́', '');
   const vowels = 'аеёиоуыэюя';
@@ -788,23 +789,55 @@ function buildStressOptions(stressed) {
   for (let i = 0; i < clean.length; i++) {
     if (vowels.includes(clean[i].toLowerCase())) positions.push(i);
   }
-  const variants = new Set([stressed]);
-  for (const pos of positions) variants.add(addAccent(clean, pos));
-  const arr = shuffle([...variants]);
-  while (arr.length < 4) arr.push(arr[arr.length - 1] || stressed);
-  return arr.slice(0, 4);
+  const wrongVariants = [...new Set(positions.map((pos) => addAccent(clean, pos)).filter((variant) => variant !== stressed))];
+  const selectedWrong = shuffle(wrongVariants).slice(0, 3);
+  return shuffle([stressed, ...selectedWrong]).slice(0, 4);
 }
 
 function buildPunctuationOptions(correct, prompt) {
-  const options = new Set([correct, prompt]);
-  if (!prompt.includes(',')) {
-    options.add(prompt.replace(/\s+(что|когда|если|потому что|так как|хотя|чтобы)\b/i, ', $1'));
-  }
-  options.add(prompt.replace(/\s+(но|а|однако|зато)\s+/i, ', $1 '));
-  if (!/[.!?]$/.test(correct)) options.add(correct + '.');
-  const arr = shuffle([...options]);
-  while (arr.length < 4) arr.push(arr[arr.length - 1] || correct);
-  return arr.slice(0, 4);
+  const base = String(prompt || '').trim();
+  const right = String(correct || '').trim();
+  const normalize = (value) => String(value || '')
+    .replace(/\s+,/g, ',')
+    .replace(/,\s+/g, ', ')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+
+  const injectCommaAtRandomGap = (text) => {
+    const words = String(text || '').split(/\s+/).filter(Boolean);
+    if (words.length < 4) return text;
+    const positions = [];
+    for (let i = 1; i < words.length - 1; i++) positions.push(i);
+    const pos = positions[Math.floor(Math.random() * positions.length)];
+    const copy = [...words];
+    copy[pos - 1] = copy[pos - 1] + ',';
+    return copy.join(' ');
+  };
+
+  const scrambleWithRandomCommas = (text) => {
+    let value = String(text || '').replace(/,/g, '');
+    for (let i = 0; i < 2; i++) value = injectCommaAtRandomGap(value);
+    return value;
+  };
+
+  const variants = new Set([
+    normalize(right),
+    normalize(base),
+    normalize(right.replace(/,/g, '')),
+    normalize(base.replace(/\s+(что|чтобы|если|когда|хотя|пока)\b/i, ', $1')),
+    normalize(base.replace(/\s+(потому что|так как|несмотря на то что|в то время как)\b/i, ', $1')),
+    normalize(base.replace(/\s+(но|а|однако|зато)\s+/i, ', $1 ')),
+    normalize(right.replace(/,\s*(что|чтобы|если|когда|хотя|пока)\b/i, ' $1,')),
+    normalize(right.replace(/,\s*(но|а|однако|зато)\s+/i, ' $1, ')),
+    normalize(injectCommaAtRandomGap(base)),
+    normalize(injectCommaAtRandomGap(right.replace(/,/g, ''))),
+    normalize(scrambleWithRandomCommas(base))
+  ]);
+
+  const wrong = [...variants].filter((v) => v && v !== normalize(right));
+  const uniqueWrong = [...new Set(wrong)].filter((v) => v !== normalize(right));
+  const selectedWrong = shuffle(uniqueWrong).slice(0, 3);
+  return shuffle([normalize(right), ...selectedWrong]).slice(0, 4);
 }
 
 function inferTopic(question) {
@@ -871,20 +904,15 @@ function egeVerdict(scorePercent) {
   return '2 — нужно ещё тренироваться';
 }
 
-async function submitEgeExam(answers) {
+
+async function submitEgeExam(answers, forceExpired = false) {
   const session = await getEgeExamSession();
-  if (session.submittedAt) {
-    return session.result || {
-      questions: session.questions || [],
-      correct: 0,
-      total: (session.questions || []).length,
-      scorePercent: 0,
-      verdict: 'Экзамен уже завершён.'
-    };
+  if (session.submittedAt && session.result) {
+    return session.result;
   }
 
   const questions = session.questions || [];
-  const expired = (Date.now() - Number(session.startedAt || Date.now())) >= Number(session.durationSeconds || 600) * 1000;
+  const expired = forceExpired || ((Date.now() - Number(session.startedAt || Date.now())) >= Number(session.durationSeconds || 600) * 1000);
 
   const checked = questions.map((q) => {
     const found = answers.find((a) => a.id === q.id);
@@ -920,12 +948,14 @@ async function submitEgeExam(answers) {
     scorePercent,
     verdict: total === 0 ? 'Добавь карточки для ЕГЭ-режима.' : egeVerdict(scorePercent),
     expired,
-    weakTopics
+    weakTopics,
+    submittedAt: Date.now()
   };
 
   session.submittedAt = Date.now();
   session.result = result;
   await saveEgeExamSession(session);
+  await saveEgeExamResult(result);
   return result;
 }
 
@@ -955,6 +985,9 @@ async function getStateSnapshot() {
   const league = leagueForLevel(profile.level || 1);
   const nextLeague = nextLeagueLevel(profile.level || 1);
   const weakSpots = weakSpotsForWeek(items);
+  const weakCount = weakSpots.length;
+  stats.weakCount = weakCount;
+  const priorityReviewCards = (weakSpots.length ? weakSpots : dueNow).slice(0, 50);
   const missions = missionsFromState(profile, items, settings);
   const chestAvailable = Number(profile.rememberedToday || 0) >= Number(settings.dailyGoal || 10) && profile.chestClaimedDay !== dayKey();
   return {
@@ -962,6 +995,7 @@ async function getStateSnapshot() {
     cards: items,
     favorites: favorites.sort((a,b)=>(b.score||0)-(a.score||0)).slice(0,50),
     dueCards: dueNow.slice(0,50),
+    priorityReviewCards,
     profile,
     stats,
     gamification: {

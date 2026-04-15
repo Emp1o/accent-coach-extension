@@ -1,4 +1,3 @@
-var chrome = globalThis.chrome || globalThis.browser;
 function escapeHtml(value) {
   return String(value ?? '')
     .replaceAll('&', '&amp;')

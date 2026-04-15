@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Accent Coach — ударения, запятые, ЕГЭ",
   "version": "2.1.0",
-  "description": "Совместимо с Chrome и Яндекс Браузером. Ударения, запятые, карточки, уведомления и ЕГЭ-режим.",
+  "description": "Расширение для ударений, пунктуации, карточек и подготовки к ЕГЭ. Работает локально, без обязательного внешнего API.",
   "permissions": [
     "contextMenus",
     "storage",
@@ -11,7 +11,8 @@
   ],
   "host_permissions": [],
   "background": {
-    "service_worker": "sw.js"
+    "service_worker": "sw.js",
+    "type": "module"
   },
   "content_scripts": [
     {

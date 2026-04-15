@@ -1,4 +1,3 @@
-var chrome = globalThis.chrome || globalThis.browser;
 
 function escapeHtml(value) {
   return String(value ?? '')
@@ -40,7 +39,7 @@ init();
 
 
 
-document.getElementById("reviewWeakBtn").addEventListener("click", async()=>{ await chrome.runtime.sendMessage({type:"OPEN_REVIEW_CARD", mode:"weak"}); });
+document.getElementById("reviewWeakBtn").addEventListener("click", async()=>{ await openTraining("weak"); });
 
 
 document.addEventListener('click', async (event) => {

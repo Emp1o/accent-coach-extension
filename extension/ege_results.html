@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Результаты ЕГЭ — Accent Coach</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="container wide">
+      <section class="hero-card slim">
+        <div>
+          <p class="eyebrow">ЕГЭ PRO</p>
+          <h1>Результаты экзамена</h1>
+          <p class="hero-copy">Итог теста, слабые темы и подробный разбор ответов.</p>
+        </div>
+        <a class="pill-link" href="cards.html" target="_blank">Все карточки</a>
+      </section>
+      <section class="panel">
+        <div class="panel-header"><h2>Итог</h2><span class="badge">результат</span></div>
+        <div id="egeSummary" class="muted"></div>
+      </section>
+      <section id="egeWeakTopics" class="panel"></section>
+      <section class="panel">
+        <div class="panel-header"><h2>Разбор ответов</h2><span class="badge">подробно</span></div>
+        <div id="egeDetails"></div>
+      </section>
+    </main>
+    <script src="ege_results.js"></script>
+  </body>
+</html>

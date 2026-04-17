@@ -31,7 +31,7 @@ fileInput.addEventListener("change", async () => {
   const text = await file.text();
   const payload = JSON.parse(text);
   await chrome.runtime.sendMessage({ type: "IMPORT_CARDS", payload });
-  statusEl.textContent = "Карточки импортированы.";
+  statusEl.textContent = "Словарь импортирован. Личная статистика, XP, рейтинг и достижения не затронуты.";
 });
 
 init();

@@ -344,7 +344,7 @@ document.getElementById("exportBtn").addEventListener("click", async () => {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = "accent-coach-export.json";
+  a.download = "accent-coach-dictionary-export.json";
   a.click();
   URL.revokeObjectURL(url);
 });

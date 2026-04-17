@@ -1010,8 +1010,22 @@ async function getStateSnapshot() {
     }
   };
 }
-async function exportCards() { const cards = await getCards(); const settings = await getSettings(); const profile = await getProfile(); return { cards, settings, profile, exportedAt: new Date().toISOString() }; }
-async function importCards(payload) { if (!payload || typeof payload !== 'object') return; if (payload.cards && typeof payload.cards === 'object') await chrome.storage.local.set({ [STORAGE_KEYS.cards]: payload.cards }); if (payload.settings && typeof payload.settings === 'object') await saveSettings(payload.settings); if (payload.profile && typeof payload.profile === 'object') await saveProfile({ ...DEFAULT_PROFILE, ...payload.profile }); }
+async function exportCards() {
+  const cards = await getCards();
+  return {
+    exportType: 'dictionary-only',
+    version: 1,
+    cards,
+    exportedAt: new Date().toISOString(),
+    note: 'Экспорт содержит только словарь/карточки. Личная статистика, XP, рейтинг, серия дней и достижения не включаются.'
+  };
+}
+async function importCards(payload) {
+  if (!payload || typeof payload !== 'object') return;
+  if (payload.cards && typeof payload.cards === 'object') {
+    await chrome.storage.local.set({ [STORAGE_KEYS.cards]: payload.cards });
+  }
+}
 async function storeLastProcessedText(payload) { await chrome.storage.local.set({ [STORAGE_KEYS.lastProcessedText]: payload }); }
 async function getLastProcessedText() { const data = await chrome.storage.local.get(STORAGE_KEYS.lastProcessedText); return data[STORAGE_KEYS.lastProcessedText] || null; }
 async function storeLastSearch(payload) { await chrome.storage.local.set({ [STORAGE_KEYS.lastSearch]: payload }); }

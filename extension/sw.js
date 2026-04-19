@@ -70,9 +70,12 @@ function pickLockedDragonSkin(profile) {
 }
 
 
+const BOSS_SKINS = ['dragon_boss', 'dragon_forest', 'dragon_storm', 'dragon_crystal', 'dragon_shadow', 'dragon_ege'];
+function normalizeBossSkin(skin) {
+  return BOSS_SKINS.includes(skin) ? skin : 'dragon_boss';
+}
 function randomBossSkin() {
-  const skins = ['dragon_boss', 'dragon_forest', 'dragon_storm', 'dragon_crystal', 'dragon_shadow', 'dragon_ege'];
-  return skins[Math.floor(Math.random() * skins.length)];
+  return BOSS_SKINS[Math.floor(Math.random() * BOSS_SKINS.length)];
 }
 
 function bossMaxHpForStage(stage) {
@@ -88,7 +91,7 @@ function normalizeBossProfile(profile, variant = 'mixed') {
   if (profile.bossMaxHp !== targetMax) profile.bossMaxHp = targetMax;
   profile.bossHp = Number(profile.bossHp || profile.bossMaxHp);
   profile.bossHp = Math.min(profile.bossMaxHp, Math.max(0, profile.bossHp));
-  profile.bossSkin = profile.bossSkin || 'dragon_boss';
+  profile.bossSkin = normalizeBossSkin(profile.bossSkin || 'dragon_boss');
   profile.bossVariant = variant || profile.bossVariant || 'mixed';
   profile.bossLastDamage = Number(profile.bossLastDamage || 0);
   return profile;

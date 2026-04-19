@@ -1470,3 +1470,25 @@ body {
   will-change: transform, opacity !important;
 }
 
+
+
+
+/* FINAL BOSS SKIN SYNC — one boss skin everywhere: popup, training, EGE exam/results. */
+.dragon-boss-visual,
+.training-boss-visual {
+  background-size: contain !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+}
+.dragon-boss-visual.skin-boss,
+.training-boss-visual.skin-boss { background-image: url("assets/dragon-boss.svg") !important; }
+.dragon-boss-visual.skin-forest,
+.training-boss-visual.skin-forest { background-image: url("assets/dragon-forest.svg") !important; }
+.dragon-boss-visual.skin-storm,
+.training-boss-visual.skin-storm { background-image: url("assets/dragon-storm.svg") !important; }
+.dragon-boss-visual.skin-crystal,
+.training-boss-visual.skin-crystal { background-image: url("assets/dragon-crystal.svg") !important; }
+.dragon-boss-visual.skin-shadow,
+.training-boss-visual.skin-shadow { background-image: url("assets/dragon-shadow.svg") !important; }
+.dragon-boss-visual.skin-ege,
+.training-boss-visual.skin-ege { background-image: url("assets/dragon-ege.svg") !important; }

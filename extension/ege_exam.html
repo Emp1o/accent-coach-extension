@@ -3,8 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ЕГЭ PRO — Accent Coach</title>
+    <title>ЕГЭ-режим — ОрфоДракон</title>
     <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="dragon-v3.css" />
   </head>
   <body>
     <main class="container wide">
@@ -15,6 +16,17 @@
           <p class="hero-copy">Строгий режим: таймер, одна попытка, итоговая оценка и анализ слабых тем.</p>
         </div>
         <a class="pill-link" href="popup.html" target="_blank">Открыть тренажёр</a>
+      </section>
+
+      <section id="egeExamBossArena" class="training-boss-arena boss-mixed">
+        <div id="egeExamBossVisual" class="training-boss-visual boss-mixed" aria-hidden="true"></div>
+        <div class="training-boss-info">
+          <div class="panel-header compact">
+            <h2 id="egeExamBossTitle">Босс ЕГЭ</h2>
+          </div>
+          <div class="boss-health-bar"><div id="egeExamBossHpBar" class="boss-health-fill"></div></div>
+          <p id="egeExamBossHpText" class="mini-help">HP: —</p>
+        </div>
       </section>
 
       <section class="panel ege-toolbar">
@@ -43,14 +55,8 @@
         </div>
       </section>
 
-      <section id="egeFinishNotice" class="panel hidden">
-        <div class="panel-header">
-          <h2>Экзамен завершён</h2>
-          <span class="badge">результаты открыты в новой вкладке</span>
-        </div>
-        <div class="muted">Ввод ответов заблокирован. Открой вкладку с результатами, чтобы посмотреть разбор ответов.</div>
-      </section>
     </main>
     <script src="ege_exam.js"></script>
+      <script src="dragon-ui.js"></script>
   </body>
 </html>

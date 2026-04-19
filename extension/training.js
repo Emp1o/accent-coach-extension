@@ -12,6 +12,7 @@ let earnedXp = 0;
 let remembered = 0;
 let forgotten = 0;
 let answerShown = false;
+let bossState = { hp: 1200, maxHp: 1200, variant: 'mixed', skin: 'dragon_boss', stage: 1 };
 
 const trainingCounter = document.getElementById('trainingCounter');
 const trainingModeLabel = document.getElementById('trainingModeLabel');
@@ -27,6 +28,83 @@ const rememberBtn = document.getElementById('rememberBtn');
 const trainingSummary = document.getElementById('trainingSummary');
 const trainingSummaryText = document.getElementById('trainingSummaryText');
 const restartTrainingBtn = document.getElementById('restartTrainingBtn');
+
+const trainingBossArena = document.getElementById('trainingBossArena');
+const trainingBossVisual = document.getElementById('trainingBossVisual');
+const trainingBossTitle = document.getElementById('trainingBossTitle');
+const trainingBossHpBar = document.getElementById('trainingBossHpBar');
+const trainingBossHpText = document.getElementById('trainingBossHpText');
+const trainingBossDamage = document.getElementById('trainingBossDamage');
+
+function bossTitle(variant) {
+  if (variant === 'stress') return 'Босс ударений';
+  if (variant === 'punctuation') return 'Босс запятых';
+  return 'Смешанный босс ошибок';
+}
+
+async function loadBossState() {
+  try {
+    const state = await chrome.runtime.sendMessage({ type: 'GET_STATE' });
+    const g = state?.gamification || {};
+    bossState = {
+      hp: Number(g.bossHp ?? 1200),
+      maxHp: Number(g.bossMaxHp ?? 1200),
+      variant: g.bossVariant || 'mixed',
+      skin: g.bossSkin || 'dragon_boss',
+      stage: Number(g.bossStage || 1)
+    };
+  } catch (error) {
+    bossState = { hp: 1200, maxHp: 1200, variant: 'mixed', skin: 'dragon_boss', stage: 1 };
+  }
+  renderTrainingBoss();
+}
+
+function renderTrainingBoss() {
+  const maxHp = Number(bossState.maxHp || 1200);
+  const hp = Math.max(0, Number(bossState.hp ?? maxHp));
+  const variant = bossState.variant || 'mixed';
+  if (trainingBossArena) {
+    trainingBossArena.classList.remove('boss-stress', 'boss-punctuation', 'boss-mixed');
+    trainingBossArena.classList.add(`boss-${variant}`);
+  }
+  if (trainingBossVisual) {
+    trainingBossVisual.classList.remove('boss-stress', 'boss-punctuation', 'boss-mixed', 'damage', 'skin-boss', 'skin-forest', 'skin-storm', 'skin-crystal', 'skin-shadow', 'skin-ege');
+    trainingBossVisual.classList.add(`boss-${variant}`);
+    const skinClass = {dragon_boss:'skin-boss', dragon_forest:'skin-forest', dragon_storm:'skin-storm', dragon_crystal:'skin-crystal', dragon_shadow:'skin-shadow', dragon_ege:'skin-ege'}[bossState.skin || 'dragon_boss'] || 'skin-boss';
+    trainingBossVisual.classList.add(skinClass);
+  }
+  if (trainingBossTitle) trainingBossTitle.textContent = bossTitle(variant);
+  if (trainingBossHpBar) trainingBossHpBar.style.width = `${Math.max(0, Math.round((hp / maxHp) * 100))}%`;
+  if (trainingBossHpText) trainingBossHpText.textContent = `Босс ${bossState.stage || 1} уровня · HP: ${hp} / ${maxHp}`;
+}
+
+function damageTrainingBoss(amount = 25, boss = null) {
+  if (boss) {
+    bossState = {
+      hp: boss.bossHp ?? bossState.hp,
+      maxHp: boss.bossMaxHp ?? bossState.maxHp,
+      variant: boss.bossVariant || bossState.variant,
+      skin: boss.bossSkin || bossState.skin,
+      stage: boss.bossStage || bossState.stage
+    };
+  } else {
+    bossState.hp = Math.max(0, Number(bossState.hp || bossState.maxHp || 1200) - amount);
+  }
+  renderTrainingBoss();
+  if (trainingBossVisual) {
+    trainingBossVisual.classList.add('damage');
+    setTimeout(() => trainingBossVisual.classList.remove('damage'), 650);
+  }
+  if (trainingBossDamage) {
+    trainingBossDamage.hidden = false;
+    trainingBossDamage.textContent = `-${amount} HP`;
+    trainingBossDamage.classList.remove('show');
+    void trainingBossDamage.offsetWidth;
+    trainingBossDamage.classList.add('show');
+    setTimeout(() => { trainingBossDamage.hidden = true; }, 900);
+  }
+}
+
 const front = document.querySelector('.training-front');
 const back = document.querySelector('.training-back');
 const progressBar = document.getElementById('trainingProgressBar');
@@ -96,12 +174,23 @@ function showAnswer() {
 async function grade(result) {
   if (!session?.cards?.length) return;
   const card = session.cards[index];
-  await chrome.runtime.sendMessage({ type: 'GRADE_CARD', word: card.id, result });
+  const gradeResponse = await chrome.runtime.sendMessage({ type: 'GRADE_CARD', word: card.id, id: card.id, result });
   if (result === 'remember') {
     remembered += 1;
+    damageTrainingBoss(gradeResponse?.damage || (card.kind === 'punctuation' ? 55 : 45), gradeResponse?.boss);
     earnedXp += card.kind === 'punctuation' ? 8 : 6;
   } else {
     forgotten += 1;
+    if (gradeResponse?.boss) {
+      bossState = {
+        hp: gradeResponse.boss.bossHp ?? bossState.hp,
+        maxHp: gradeResponse.boss.bossMaxHp ?? bossState.maxHp,
+        variant: gradeResponse.boss.bossVariant || bossState.variant,
+        skin: gradeResponse.boss.bossSkin || bossState.skin,
+        stage: gradeResponse.boss.bossStage || bossState.stage
+      };
+      renderTrainingBoss();
+    }
     earnedXp += 1;
   }
   trainingXp.textContent = `XP: ${earnedXp}`;
@@ -124,6 +213,7 @@ function showSummary() {
 }
 
 async function loadSession() {
+  await loadBossState();
   const response = await chrome.runtime.sendMessage({ type: 'GET_TRAINING_SESSION' });
   session = response?.session || { cards: [], mode: 'all', count: 0 };
   index = 0;

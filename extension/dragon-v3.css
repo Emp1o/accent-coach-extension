@@ -1,0 +1,1472 @@
+
+/* Accent Coach V3 Dragon Skin: visual layer only */
+:root{
+  --v3-bg-1:#0b1020;
+  --v3-bg-2:#111827;
+  --v3-card:#ffffff;
+  --v3-ink:#101827;
+  --v3-muted:#64748b;
+  --v3-gold:#f6c84c;
+  --v3-fire:#ef4444;
+  --v3-lava:#f97316;
+  --v3-blue:#3757ff;
+  --v3-green:#22c55e;
+  --v3-purple:#7c3aed;
+  --v3-shadow:0 18px 44px rgba(15, 23, 42, .16);
+}
+
+body{
+  background:
+    radial-gradient(circle at 12% 0%, rgba(246,200,76,.22), transparent 32%),
+    radial-gradient(circle at 85% 7%, rgba(55,87,255,.24), transparent 33%),
+    linear-gradient(180deg,#f4f7ff 0%,#eef2ff 45%,#f9fafb 100%) !important;
+}
+
+.hero-card{
+  position:relative;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.24) !important;
+  background:
+    radial-gradient(circle at 88% 12%, rgba(246,200,76,.24), transparent 28%),
+    linear-gradient(135deg,#101827 0%,#172554 48%,#7f1d1d 100%) !important;
+  box-shadow:0 20px 52px rgba(15,23,42,.24) !important;
+}
+.hero-card::before{
+  content:"";
+  position:absolute; inset:-80px -80px auto auto;
+  width:220px; height:220px; border-radius:999px;
+  background:radial-gradient(circle,rgba(249,115,22,.38),transparent 68%);
+  pointer-events:none;
+}
+.panel,.stat-card,.card-item,.search-box,.test-shell,.content-card,.reminder-card{
+  border:1px solid rgba(55,87,255,.10) !important;
+  box-shadow:var(--v3-shadow) !important;
+}
+.panel{
+  background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(248,250,252,.96)) !important;
+}
+button,.pill-link,.link.pill-link,.btn,a.pill-link{
+  min-height:40px;
+  border:0 !important;
+  border-radius:14px !important;
+  padding:10px 14px !important;
+  font-weight:850 !important;
+  letter-spacing:.01em;
+  color:#172033 !important;
+  background:linear-gradient(180deg,#ffffff,#eef2ff) !important;
+  box-shadow:0 7px 0 rgba(15,23,42,.10),0 12px 24px rgba(15,23,42,.10) !important;
+  text-decoration:none !important;
+  transition:transform .16s ease, box-shadow .16s ease, filter .16s ease !important;
+}
+button:hover,.pill-link:hover,.btn:hover{
+  transform:translateY(-1px);
+  filter:saturate(1.06);
+}
+button:active,.pill-link:active,.btn:active{
+  transform:translateY(2px);
+  box-shadow:0 3px 0 rgba(15,23,42,.14),0 8px 18px rgba(15,23,42,.12) !important;
+}
+button.primary,.primary,.btn-primary,#startTrainingQuickBtn,#startTrainingBtn,#rememberBtn,#reminderRememberBtn,#submitEgeExamBtn{
+  color:#fff !important;
+  background:linear-gradient(180deg,#4f6bff,#253edb) !important;
+  box-shadow:0 7px 0 #172c9b,0 14px 28px rgba(55,87,255,.28) !important;
+}
+button.secondary,.secondary,#reviewNowBtn,#openCardsBtn,#startEgeExamBtn,#startEgeExamFromCardsBtn,#savePunctuationFavoriteBtn,#saveFavoriteBtn,#accentAndFavoriteBtn{
+  color:#1f2937 !important;
+  background:linear-gradient(180deg,#ffe69a,#f6c84c) !important;
+  box-shadow:0 7px 0 #b7791f,0 14px 28px rgba(246,200,76,.25) !important;
+}
+button.danger,.danger,#forgetBtn,#reminderForgetBtn{
+  color:#fff !important;
+  background:linear-gradient(180deg,#fb7185,#e11d48) !important;
+  box-shadow:0 7px 0 #9f1239,0 14px 28px rgba(225,29,72,.22) !important;
+}
+button.ghost,.ghost{
+  color:#334155 !important;
+  background:linear-gradient(180deg,#ffffff,#f1f5f9) !important;
+}
+.cta-card{
+  color:#fff !important;
+  background:linear-gradient(180deg,#22c55e,#15803d) !important;
+  box-shadow:0 7px 0 #166534,0 14px 28px rgba(34,197,94,.22) !important;
+}
+input,textarea,select{
+  border:2px solid rgba(55,87,255,.14) !important;
+  border-radius:15px !important;
+  background:#fff !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 8px 20px rgba(15,23,42,.05) !important;
+}
+input:focus,textarea:focus,select:focus{
+  outline:none !important;
+  border-color:rgba(246,200,76,.72) !important;
+  box-shadow:0 0 0 4px rgba(246,200,76,.22),0 8px 20px rgba(15,23,42,.08) !important;
+}
+.stat-card{
+  background:linear-gradient(180deg,#ffffff,#f8fafc) !important;
+  border-radius:20px !important;
+}
+.stat-card strong{
+  color:#1e3a8a !important;
+}
+.badge{
+  border:1px solid rgba(55,87,255,.13);
+  background:linear-gradient(180deg,#eef2ff,#fff7ed) !important;
+  color:#1e3a8a !important;
+  font-weight:850;
+}
+.training-card,.training-side,.flip-face,.reminder-card{
+  border-radius:28px !important;
+  background:
+    radial-gradient(circle at 15% 0%,rgba(246,200,76,.20),transparent 32%),
+    linear-gradient(180deg,#ffffff,#f8fafc) !important;
+  border:1px solid rgba(55,87,255,.12) !important;
+}
+.training-question,.big-word,#trainingQuestion,#reminderQuestion{
+  color:#111827 !important;
+  text-shadow:none !important;
+}
+.dragon-mascot-card{
+  display:flex; align-items:center; gap:12px;
+  margin:14px 0 0; padding:12px;
+  border-radius:20px;
+  background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.20);
+  backdrop-filter: blur(8px);
+}
+.dragon-mascot-img{
+  width:86px; height:86px; object-fit:contain; flex:0 0 auto;
+  filter:drop-shadow(0 14px 18px rgba(0,0,0,.22));
+  animation:dragonIdle 4.8s ease-in-out infinite;
+}
+.dragon-mascot-img.dragon-win{
+  animation:dragonWin .9s ease both;
+}
+.dragon-mascot-text{
+  color:#fff;
+}
+.dragon-mascot-text strong{
+  display:block; font-size:15px; margin-bottom:3px;
+}
+.dragon-mascot-text p{
+  margin:0; opacity:.88; line-height:1.35; font-size:13px;
+}
+.dragon-guide-link{
+  display:inline-flex; margin-top:8px;
+  color:#1f2937 !important;
+  background:linear-gradient(180deg,#fff7ed,#f6c84c) !important;
+  border-radius:999px !important; padding:7px 10px !important;
+  font-weight:900; text-decoration:none !important;
+}
+.dragon-boss-panel{
+  margin:12px 0 0; padding:14px;
+  border-radius:22px;
+  background:linear-gradient(135deg,rgba(15,23,42,.92),rgba(127,29,29,.88));
+  color:#fff;
+  border:1px solid rgba(246,200,76,.24);
+  box-shadow:0 16px 32px rgba(15,23,42,.18);
+}
+.dragon-boss-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:9px}
+.dragon-boss-title{font-weight:900}
+.dragon-boss-hp{font-size:12px;opacity:.9}
+.dragon-hp-track{
+  height:14px; border-radius:999px; background:rgba(255,255,255,.14); overflow:hidden;
+  border:1px solid rgba(255,255,255,.18);
+}
+.dragon-hp-fill{
+  height:100%; width:100%;
+  background:linear-gradient(90deg,#ef4444,#f97316,#f6c84c);
+  border-radius:999px;
+  transition:width .5s ease;
+}
+.dragon-boss-note{margin:8px 0 0;font-size:12px;opacity:.82}
+.dragon-skin-grid{
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:12px; margin-top:12px;
+}
+.dragon-skin-card{
+  border:1px solid rgba(55,87,255,.14); border-radius:18px; padding:12px;
+  background:linear-gradient(180deg,#fff,#f8fafc);
+  box-shadow:0 10px 24px rgba(15,23,42,.07);
+}
+.dragon-skin-card.locked{filter:grayscale(.8);opacity:.62}
+.dragon-skin-card img{width:100%;height:120px;object-fit:contain}
+.dragon-skin-card h3{font-size:15px;margin:8px 0 5px}
+.dragon-skin-card p{font-size:12px;color:var(--muted);margin:0 0 8px}
+.dragon-skin-card .selected-label{font-size:12px;font-weight:900;color:#15803d}
+.dragon-particles{
+  position:fixed; inset:0; pointer-events:none; z-index:999999;
+}
+.dragon-particle{
+  position:fixed;
+  width:9px; height:9px; border-radius:999px;
+  background:var(--p,#f6c84c);
+  left:var(--x); top:var(--y);
+  box-shadow:0 0 16px var(--p,#f6c84c);
+  animation:dragonBurst .85s cubic-bezier(.15,.8,.25,1) forwards;
+}
+.guide-page .guide-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.guide-shot{width:100%;border-radius:18px;border:1px solid rgba(55,87,255,.14);box-shadow:var(--v3-shadow)}
+.guide-step{padding:16px;border-radius:18px;background:#fff;border:1px solid rgba(55,87,255,.10);box-shadow:var(--v3-shadow)}
+@keyframes dragonIdle{
+  0%,100%{transform:translateY(0) rotate(-1deg)}
+  45%{transform:translateY(-7px) rotate(1.5deg)}
+  70%{transform:translateY(-3px) rotate(-.5deg)}
+}
+@keyframes dragonWin{
+  0%{transform:scale(1) rotate(0)}
+  35%{transform:scale(1.12) rotate(-6deg)}
+  70%{transform:scale(1.08) rotate(5deg)}
+  100%{transform:scale(1) rotate(0)}
+}
+@keyframes dragonBurst{
+  0%{transform:translate(0,0) scale(.8);opacity:1}
+  100%{transform:translate(var(--dx), var(--dy)) scale(.2);opacity:0}
+}
+@media (prefers-reduced-motion: reduce){
+  .dragon-mascot-img,.dragon-wing,.dragon-flame,.dragon-particle{animation:none !important}
+}
+
+
+/* V3 dragon polish: design-only layer */
+:root {
+  --dragon-ink: #241409;
+  --dragon-red: #9d1f16;
+  --dragon-red-2: #c43a23;
+  --dragon-gold: #e1b84e;
+  --dragon-gold-2: #fff1a8;
+  --dragon-cream: #fff8e5;
+  --dragon-blue: #355cff;
+  --dragon-shadow: 0 16px 42px rgba(36, 20, 9, .16);
+}
+
+/* Better button contrast and spacing */
+button, .btn, .pill-link, a.button {
+  border: 0;
+  border-radius: 15px;
+  min-height: 42px;
+  padding: 10px 16px;
+  font-weight: 800;
+  letter-spacing: .01em;
+  color: #241409;
+  background: linear-gradient(180deg, #ffffff, #f3ead6);
+  box-shadow: 0 8px 0 rgba(126, 86, 19, .18), 0 14px 25px rgba(36,20,9,.10);
+  text-decoration: none;
+  cursor: pointer;
+  line-height: 1.15;
+  white-space: normal;
+}
+button:hover, .btn:hover, .pill-link:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.02);
+}
+button.primary, .primary, .btn-primary, .cta-card {
+  color: #fff8e5 !important;
+  background: linear-gradient(180deg, #c83a24, #87180f) !important;
+  box-shadow: 0 8px 0 rgba(90, 10, 5, .35), 0 16px 28px rgba(143, 24, 19, .22) !important;
+}
+button.secondary, .secondary {
+  color: #241409 !important;
+  background: linear-gradient(180deg, #ffeaa0, #d9a930) !important;
+}
+button.ghost, .ghost {
+  color: #352113 !important;
+  background: rgba(255,255,255,.78) !important;
+  border: 1px solid rgba(225,184,78,.35) !important;
+}
+button.danger, .danger {
+  color: #fff8e5 !important;
+  background: linear-gradient(180deg, #7d1520, #4b0811) !important;
+}
+
+/* Ensure buttons never collide with text below */
+.actions, .hero-buttons, .toolbar, .actions.compact {
+  gap: 12px !important;
+  row-gap: 12px !important;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+.actions + .muted,
+.actions + .feature-callout,
+.actions + textarea,
+.actions + input,
+.hero-buttons + p,
+.hero-buttons + div {
+  margin-top: 14px !important;
+}
+button + .mini-help,
+button + .inline-status {
+  margin-top: 8px !important;
+}
+
+/* Royal gold side accents */
+.panel, .hero-card, .stat-card, .card-item, .test-shell {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(225,184,78,.26) !important;
+  box-shadow: var(--dragon-shadow);
+}
+.panel::before, .hero-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 5px;
+  background: linear-gradient(180deg, var(--dragon-gold-2), var(--dragon-gold), #8c5d00);
+  opacity: .95;
+}
+.panel::after, .hero-card::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 0 auto;
+  width: 3px;
+  background: linear-gradient(180deg, rgba(255,241,168,.8), rgba(225,184,78,.5), rgba(140,93,0,.25));
+  pointer-events: none;
+}
+
+.hero-card, .dragon-royal-hero {
+  background:
+    radial-gradient(circle at 86% 12%, rgba(255, 230, 123, .28), transparent 24%),
+    linear-gradient(135deg, #271207 0%, #7d160e 48%, #1e1021 100%) !important;
+}
+
+/* Highlight main descriptions */
+.hero-copy, .feature-callout, .warning-box, .input-hint, .muted.mini-help {
+  font-size: 14px;
+  line-height: 1.5;
+}
+.hero-copy {
+  color: #fff4d2 !important;
+  font-weight: 700;
+}
+.function-highlight, .feature-callout, .warning-box {
+  border-radius: 16px !important;
+  padding: 12px 14px !important;
+  background: linear-gradient(180deg, #fff8df, #fffdf7) !important;
+  border: 1px solid rgba(225,184,78,.45) !important;
+  color: #563510 !important;
+  font-weight: 750 !important;
+}
+
+/* Dragon mascot visuals */
+.dragon-mascot, .dragon-mini {
+  width: 132px;
+  height: 96px;
+  background: url("assets/dragon-king.svg") center/contain no-repeat;
+  filter: drop-shadow(0 12px 16px rgba(40,10,2,.18));
+  animation: dragonFloat 4.5s ease-in-out infinite, dragonBreath 3.2s ease-in-out infinite;
+  transform-origin: 50% 70%;
+}
+.dragon-mini--boss { background-image: url("assets/dragon-boss.svg"); }
+.dragon-mini--ice { background-image: url("assets/dragon-ice.svg"); }
+.dragon-mascot:hover, .dragon-mini:hover {
+  animation: dragonWingPulse .9s ease-in-out, dragonFloat 4.5s ease-in-out infinite;
+}
+@keyframes dragonFloat {
+  0%,100% { transform: translateY(0) rotate(-1deg); }
+  50% { transform: translateY(-7px) rotate(1deg); }
+}
+@keyframes dragonBreath {
+  0%,100% { filter: drop-shadow(0 12px 16px rgba(40,10,2,.18)); }
+  50% { filter: drop-shadow(0 12px 18px rgba(255,155,28,.32)); }
+}
+@keyframes dragonWingPulse {
+  0% { transform: scale(1) rotate(0); }
+  38% { transform: scale(1.07) rotate(-2deg); }
+  72% { transform: scale(1.03) rotate(2deg); }
+  100% { transform: scale(1) rotate(0); }
+}
+
+/* Eye glow/blink for inline SVG images where browser loads them as background cannot animate inner paths, so mimic with overlay */
+.dragon-mascot::after, .dragon-mini::after {
+  content: "";
+  position: absolute;
+  width: 30px;
+  height: 10px;
+  border-radius: 999px;
+  left: 48%;
+  top: 42%;
+  background: radial-gradient(circle, rgba(255,207,72,.85), transparent 70%);
+  animation: dragonBlink 5.6s infinite;
+  pointer-events: none;
+}
+@keyframes dragonBlink {
+  0%, 92%, 100% { opacity: .85; transform: scaleY(1); }
+  94% { opacity: .2; transform: scaleY(.12); }
+  96% { opacity: .85; transform: scaleY(1); }
+}
+
+/* Confetti/fire burst should stay local, not fall down page */
+.dragon-burst {
+  position: fixed;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  pointer-events: none;
+  z-index: 999999;
+  background: #ffd86b;
+  box-shadow: 0 0 12px rgba(255,190,40,.9);
+  animation: dragonBurst .85s ease-out forwards;
+}
+@keyframes dragonBurst {
+  0% { opacity: 1; transform: translate(0,0) scale(1); }
+  100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(.25); }
+}
+
+/* EGE result styles */
+.answer-correct { border-color: rgba(26,159,90,.3) !important; background: linear-gradient(180deg,#f1fff6,#fff) !important; }
+.answer-wrong { border-color: rgba(226,85,85,.25) !important; background: linear-gradient(180deg,#fff5f5,#fff) !important; }
+.result-answer-row {
+  display: grid;
+  gap: 8px;
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 12px;
+  background: rgba(255,248,229,.8);
+}
+
+/* Responsive button fixes */
+@media (max-width: 520px) {
+  button, .btn, .pill-link {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+.dragon-guide-entry {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  min-width: 150px;
+}
+.dragon-react {
+  animation: dragonWingPulse .9s ease-in-out, dragonFloat 4.5s ease-in-out infinite !important;
+}
+
+/* Full-body realistic dragon update */
+.dragon-mini,
+.dragon-mascot {
+  width: 210px !important;
+  height: 138px !important;
+  background-image: url("assets/dragon-king.svg") !important;
+  background-size: contain !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+}
+.dragon-mini--boss { background-image: url("assets/dragon-boss.svg") !important; }
+.dragon-mini--ice { background-image: url("assets/dragon-ice.svg") !important; }
+
+.dragon-guide-entry {
+  display: grid !important;
+  justify-items: center !important;
+  gap: 10px !important;
+  min-width: 230px !important;
+}
+.dragon-link-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+.dragon-link-row .pill-link {
+  min-height: 38px;
+  padding: 8px 12px;
+  font-size: 13px;
+}
+
+/* More alive dragon motion */
+.dragon-mini,
+.dragon-mascot {
+  animation:
+    dragonFlyIdle 5.5s ease-in-out infinite,
+    dragonFireGlow 3s ease-in-out infinite !important;
+  transform-origin: 50% 70%;
+}
+@keyframes dragonFlyIdle {
+  0%, 100% { transform: translateY(0) rotate(-1deg) scale(1); }
+  25% { transform: translateY(-4px) rotate(.8deg) scale(1.01); }
+  50% { transform: translateY(-9px) rotate(1.4deg) scale(1.02); }
+  75% { transform: translateY(-3px) rotate(-.4deg) scale(1.01); }
+}
+@keyframes dragonFireGlow {
+  0%,100% { filter: drop-shadow(0 14px 18px rgba(58,16,8,.22)); }
+  50% { filter: drop-shadow(0 18px 24px rgba(255,144,28,.42)); }
+}
+.dragon-mini:hover,
+.dragon-mascot:hover,
+.dragon-react {
+  animation: dragonRoar .95s ease-in-out, dragonFlyIdle 5.5s ease-in-out infinite !important;
+}
+@keyframes dragonRoar {
+  0% { transform: translateY(0) scale(1) rotate(0); }
+  32% { transform: translateY(-8px) scale(1.06) rotate(-2deg); }
+  62% { transform: translateY(-3px) scale(1.04) rotate(2deg); }
+  100% { transform: translateY(0) scale(1) rotate(0); }
+}
+
+/* Replace pseudo eye overlay so it does not look like a bug over full body */
+.dragon-mini::after,
+.dragon-mascot::after {
+  left: 67% !important;
+  top: 34% !important;
+  width: 34px !important;
+  height: 14px !important;
+  background: radial-gradient(circle, rgba(255,210,60,.85), rgba(255,95,20,.25), transparent 70%) !important;
+}
+
+/* Add more royal gold accents without changing functionality */
+.panel-header h2::before,
+.hero-card h1::before {
+  content: "♛ ";
+  color: #d7a93b;
+  text-shadow: 0 1px 0 rgba(255,255,255,.35);
+}
+.panel {
+  background:
+    linear-gradient(90deg, rgba(215,169,59,.10), transparent 12%, transparent 88%, rgba(215,169,59,.08)),
+    var(--card) !important;
+}
+
+
+/* Fix EGE radio option layout */
+.ege-options {
+  display: grid !important;
+  gap: 10px !important;
+  margin-top: 12px !important;
+}
+.ege-option {
+  display: grid !important;
+  grid-template-columns: 22px 1fr !important;
+  align-items: start !important;
+  gap: 12px !important;
+  width: 100% !important;
+  padding: 12px 14px !important;
+  border-radius: 14px !important;
+  border: 1px solid rgba(215,169,59,.28) !important;
+  background: linear-gradient(180deg, #fffdf7, #fff7e6) !important;
+  color: #241409 !important;
+  box-sizing: border-box !important;
+  cursor: pointer !important;
+}
+.ege-option input[type="radio"] {
+  width: 18px !important;
+  height: 18px !important;
+  min-width: 18px !important;
+  margin: 2px 0 0 0 !important;
+  padding: 0 !important;
+  accent-color: #9d1f16 !important;
+  box-shadow: none !important;
+}
+.ege-option span {
+  display: block !important;
+  line-height: 1.45 !important;
+  overflow-wrap: anywhere !important;
+}
+
+/* Inline popup status instead of blocking alert */
+.dragon-status {
+  margin: 8px 0 0 !important;
+  padding: 10px 12px !important;
+  border-radius: 14px !important;
+  border: 1px solid rgba(215,169,59,.35) !important;
+  background: linear-gradient(180deg, #fff8e6, #fffdf7) !important;
+  color: #51310d !important;
+  font-weight: 800 !important;
+  line-height: 1.35 !important;
+}
+.dragon-status--success {
+  background: linear-gradient(180deg, #ecfff4, #f8fffb) !important;
+  border-color: rgba(26,159,90,.25) !important;
+  color: #12663b !important;
+}
+.dragon-status--warning {
+  background: linear-gradient(180deg, #fff0ed, #fffaf9) !important;
+  border-color: rgba(226,85,85,.28) !important;
+  color: #8f1e16 !important;
+}
+.dragon-status--info {
+  background: linear-gradient(180deg, #eef4ff, #ffffff) !important;
+  border-color: rgba(53,92,255,.22) !important;
+  color: #2443a8 !important;
+}
+
+/* Boss as visual dragon, not just HP stripe */
+.dragon-boss-arena {
+  display: grid;
+  grid-template-columns: minmax(170px, 260px) 1fr;
+  gap: 16px;
+  align-items: center;
+  padding: 16px;
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(255, 92, 31, .18), transparent 35%),
+    linear-gradient(135deg, #180908, #2a1010 55%, #0f111a);
+  color: #fff8e5;
+  border: 1px solid rgba(215,169,59,.38);
+  box-shadow: 0 18px 42px rgba(20,8,7,.25);
+}
+.dragon-boss-visual {
+  width: 100%;
+  min-height: 150px;
+  background: url("assets/dragon-boss.svg") center/contain no-repeat;
+  filter: drop-shadow(0 16px 20px rgba(0,0,0,.45));
+  animation: dragonBossIdle 4.8s ease-in-out infinite;
+}
+.dragon-boss-visual.damage {
+  animation: dragonDamage .55s ease-in-out, dragonBossIdle 4.8s ease-in-out infinite;
+}
+.dragon-boss-hp {
+  display: inline-flex;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(255, 230, 150, .13);
+  border: 1px solid rgba(255, 230, 150, .28);
+  font-weight: 900;
+  color: #ffeaa0;
+}
+.dragon-boss-copy strong {
+  color: #ffeaa0;
+}
+@keyframes dragonBossIdle {
+  0%,100% { transform: translateY(0) scale(1); filter: drop-shadow(0 16px 20px rgba(0,0,0,.45)); }
+  50% { transform: translateY(-8px) scale(1.015); filter: drop-shadow(0 18px 28px rgba(255,74,26,.28)); }
+}
+@keyframes dragonDamage {
+  0% { transform: translateX(0) scale(1); filter: drop-shadow(0 0 0 rgba(255,0,0,0)); }
+  25% { transform: translateX(-7px) scale(1.04); filter: drop-shadow(0 0 28px rgba(255,0,0,.85)); }
+  55% { transform: translateX(6px) scale(1.02); filter: drop-shadow(0 0 18px rgba(255,80,20,.7)); }
+  100% { transform: translateX(0) scale(1); }
+}
+@media (max-width: 700px) {
+  .dragon-boss-arena { grid-template-columns: 1fr; }
+  .dragon-boss-visual { min-height: 130px; }
+}
+
+
+/* Restored selectable dragon skins */
+.skin-king, .dragon-mini.skin-king, .dragon-mascot.skin-king { background-image: url("assets/dragon-king.svg") !important; }
+.skin-boss, .dragon-mini.skin-boss, .dragon-mascot.skin-boss { background-image: url("assets/dragon-boss.svg") !important; }
+.skin-sage, .dragon-mini.skin-sage, .dragon-mascot.skin-sage { background-image: url("assets/dragon-ice.svg") !important; }
+.skin-academy, .dragon-mini.skin-academy, .dragon-mascot.skin-academy { background-image: url("assets/dragon-academy.svg") !important; }
+.skin-ege, .dragon-mini.skin-ege, .dragon-mascot.skin-ege { background-image: url("assets/dragon-ege.svg") !important; }
+.skin-gold, .dragon-mini.skin-gold, .dragon-mascot.skin-gold { background-image: url("assets/dragon-gold.svg") !important; }
+
+.skin-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 14px;
+  margin-top: 12px;
+}
+.skin-card {
+  padding: 14px;
+  border-radius: 18px;
+  border: 1px solid rgba(215,169,59,.32);
+  background: linear-gradient(180deg,#fffdf7,#fff8e5);
+  box-shadow: 0 12px 28px rgba(36,20,9,.08);
+}
+.skin-card--selected {
+  outline: 3px solid rgba(215,169,59,.55);
+}
+.skin-card--locked {
+  opacity: .62;
+  filter: grayscale(.45);
+}
+.skin-dragon {
+  width: 100%;
+  height: 120px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+/* Error-specialized bosses */
+.dragon-boss-visual.boss-stress {
+  background-image: url("assets/dragon-boss.svg") !important;
+}
+.dragon-boss-visual.boss-punctuation {
+  background-image: url("assets/dragon-boss.svg") !important;
+}
+.dragon-boss-visual.boss-mixed {
+  background-image: url("assets/dragon-boss.svg") !important;
+}
+.dragon-boss-visual::after {
+  position: absolute;
+  right: 14%;
+  top: 16%;
+  font-size: 48px;
+  font-weight: 1000;
+  color: #ffeaa0;
+  text-shadow: 0 0 18px rgba(255,122,26,.8), 0 3px 0 #120807;
+}
+.dragon-boss-visual.boss-stress::after { content: "´"; }
+.dragon-boss-visual.boss-punctuation::after { content: ","; font-size: 70px; top: 10%; }
+.dragon-boss-visual.boss-mixed::after { content: "´,"; font-size: 44px; }
+
+.dragon-boss-arena.boss-stress {
+  background:
+    radial-gradient(circle at 18% 18%, rgba(255, 207, 75, .2), transparent 36%),
+    linear-gradient(135deg, #170809, #35130c 55%, #111827) !important;
+}
+.dragon-boss-arena.boss-punctuation {
+  background:
+    radial-gradient(circle at 18% 18%, rgba(255, 255, 255, .16), transparent 34%),
+    linear-gradient(135deg, #0f111a, #2b0f17 55%, #171018) !important;
+}
+.dragon-boss-arena.boss-mixed {
+  background:
+    radial-gradient(circle at 18% 18%, rgba(255, 92, 31, .18), transparent 35%),
+    linear-gradient(135deg, #180908, #2a1010 55%, #0f111a) !important;
+}
+
+
+/* FINAL V3 Dragon layer — full-body dragons, raised crowns, readable buttons */
+:root {
+  --dragon-ink: #241409;
+  --dragon-red: #8f1e16;
+  --dragon-gold: #d9aa36;
+  --dragon-cream: #fff8e5;
+}
+.hero-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.24) !important;
+  background:
+    radial-gradient(circle at 88% 12%, rgba(246,200,76,.24), transparent 28%),
+    linear-gradient(135deg,#101827 0%,#172554 48%,#7f1d1d 100%) !important;
+  box-shadow: 0 20px 52px rgba(15,23,42,.24) !important;
+}
+.dragon-guide-entry {
+  display: grid !important;
+  justify-items: center !important;
+  gap: 10px !important;
+  min-width: 230px !important;
+}
+.dragon-link-row {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+  justify-content: center !important;
+}
+.dragon-mini,
+.dragon-mascot {
+  width: 230px !important;
+  height: 150px !important;
+  background: url("assets/dragon-king.svg") center/contain no-repeat !important;
+  filter: drop-shadow(0 14px 18px rgba(58,16,8,.22));
+  animation: dragonFlyIdle 5.5s ease-in-out infinite, dragonFireGlow 3s ease-in-out infinite !important;
+  transform-origin: 50% 70%;
+}
+.skin-king, .dragon-mini.skin-king, .dragon-mascot.skin-king { background-image: url("assets/dragon-king.svg") !important; }
+.skin-boss, .dragon-mini.skin-boss, .dragon-mascot.skin-boss { background-image: url("assets/dragon-boss.svg") !important; }
+.skin-sage, .dragon-mini.skin-sage, .dragon-mascot.skin-sage { background-image: url("assets/dragon-ice.svg") !important; }
+.skin-academy, .dragon-mini.skin-academy, .dragon-mascot.skin-academy { background-image: url("assets/dragon-academy.svg") !important; }
+.skin-ege, .dragon-mini.skin-ege, .dragon-mascot.skin-ege { background-image: url("assets/dragon-ege.svg") !important; }
+.skin-gold, .dragon-mini.skin-gold, .dragon-mascot.skin-gold { background-image: url("assets/dragon-gold.svg") !important; }
+@keyframes dragonFlyIdle {
+  0%,100% { transform: translateY(0) rotate(-1deg) scale(1); }
+  25% { transform: translateY(-4px) rotate(.8deg) scale(1.01); }
+  50% { transform: translateY(-9px) rotate(1.4deg) scale(1.02); }
+  75% { transform: translateY(-3px) rotate(-.4deg) scale(1.01); }
+}
+@keyframes dragonFireGlow {
+  0%,100% { filter: drop-shadow(0 14px 18px rgba(58,16,8,.22)); }
+  50% { filter: drop-shadow(0 18px 24px rgba(255,144,28,.42)); }
+}
+button, .pill-link {
+  border-radius: 15px !important;
+  min-height: 42px;
+  padding: 10px 16px;
+  font-weight: 800;
+  line-height: 1.15;
+  white-space: normal;
+}
+button.primary, .primary, .cta-card {
+  color: #fff8e5 !important;
+  background: linear-gradient(180deg, #c83a24, #87180f) !important;
+  box-shadow: 0 8px 0 rgba(90,10,5,.28), 0 16px 28px rgba(143,24,19,.18) !important;
+}
+button.secondary, .secondary {
+  color: #241409 !important;
+  background: linear-gradient(180deg, #ffeaa0, #d9a930) !important;
+}
+button.ghost, .ghost {
+  color: #352113 !important;
+  background: rgba(255,255,255,.82) !important;
+  border: 1px solid rgba(225,184,78,.35) !important;
+}
+.dragon-status, .inline-status {
+  margin: 8px 0 0 !important;
+  padding: 10px 12px !important;
+  border-radius: 14px !important;
+  border: 1px solid rgba(215,169,59,.35) !important;
+  background: linear-gradient(180deg, #fff8e6, #fffdf7) !important;
+  color: #51310d !important;
+  font-weight: 800 !important;
+  line-height: 1.35 !important;
+}
+.dragon-status--success, .inline-status--success {
+  background: linear-gradient(180deg, #ecfff4, #f8fffb) !important;
+  border-color: rgba(26,159,90,.25) !important;
+  color: #12663b !important;
+}
+.dragon-status--warning, .inline-status--warning {
+  background: linear-gradient(180deg, #fff0ed, #fffaf9) !important;
+  border-color: rgba(226,85,85,.28) !important;
+  color: #8f1e16 !important;
+}
+.dragon-status--info, .inline-status--info {
+  background: linear-gradient(180deg, #eef4ff, #ffffff) !important;
+  border-color: rgba(53,92,255,.22) !important;
+  color: #2443a8 !important;
+}
+.panel, .hero-card, .stat-card, .card-item {
+  border-color: rgba(215,169,59,.18) !important;
+}
+.panel::before, .hero-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
+  background: linear-gradient(180deg, #fff4b0, #d9aa36, #6e4300);
+  pointer-events: none;
+}
+.skin-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 14px;
+  margin-top: 12px;
+}
+.skin-card {
+  padding: 14px;
+  border-radius: 18px;
+  border: 1px solid rgba(215,169,59,.32);
+  background: linear-gradient(180deg,#fffdf7,#fff8e5);
+  box-shadow: 0 12px 28px rgba(36,20,9,.08);
+}
+.skin-card--selected { outline: 3px solid rgba(215,169,59,.55); }
+.skin-card--locked { opacity: .62; filter: grayscale(.45); }
+.skin-dragon {
+  width: 100%;
+  height: 120px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+.dragon-boss-arena {
+  display: grid;
+  grid-template-columns: minmax(170px, 260px) 1fr;
+  gap: 16px;
+  align-items: center;
+  padding: 16px;
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(255, 92, 31, .18), transparent 35%),
+    linear-gradient(135deg, #180908, #2a1010 55%, #0f111a);
+  color: #fff8e5;
+  border: 1px solid rgba(215,169,59,.38);
+  box-shadow: 0 18px 42px rgba(20,8,7,.25);
+}
+.dragon-boss-visual {
+  position: relative;
+  width: 100%;
+  min-height: 150px;
+  background: url("assets/dragon-boss.svg") center/contain no-repeat;
+  filter: drop-shadow(0 16px 20px rgba(0,0,0,.45));
+  animation: dragonBossIdle 4.8s ease-in-out infinite;
+}
+.dragon-boss-visual.damage {
+  animation: dragonDamage .55s ease-in-out, dragonBossIdle 4.8s ease-in-out infinite;
+}
+.dragon-boss-hp {
+  display: inline-flex;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(255, 230, 150, .13);
+  border: 1px solid rgba(255, 230, 150, .28);
+  font-weight: 900;
+  color: #ffeaa0;
+}
+.dragon-boss-visual.boss-stress::after,
+.dragon-boss-visual.boss-punctuation::after,
+.dragon-boss-visual.boss-mixed::after {
+  position: absolute;
+  right: 14%;
+  top: 16%;
+  font-weight: 1000;
+  color: #ffeaa0;
+  text-shadow: 0 0 18px rgba(255,122,26,.8), 0 3px 0 #120807;
+}
+.dragon-boss-visual.boss-stress::after { content: "´"; font-size: 58px; }
+.dragon-boss-visual.boss-punctuation::after { content: ","; font-size: 76px; top: 10%; }
+.dragon-boss-visual.boss-mixed::after { content: "´,"; font-size: 46px; }
+@keyframes dragonBossIdle {
+  0%,100% { transform: translateY(0) scale(1); filter: drop-shadow(0 16px 20px rgba(0,0,0,.45)); }
+  50% { transform: translateY(-8px) scale(1.015); filter: drop-shadow(0 18px 28px rgba(255,74,26,.28)); }
+}
+@keyframes dragonDamage {
+  0% { transform: translateX(0) scale(1); filter: drop-shadow(0 0 0 rgba(255,0,0,0)); }
+  25% { transform: translateX(-7px) scale(1.04); filter: drop-shadow(0 0 28px rgba(255,0,0,.85)); }
+  55% { transform: translateX(6px) scale(1.02); filter: drop-shadow(0 0 18px rgba(255,80,20,.7)); }
+  100% { transform: translateX(0) scale(1); }
+}
+@media (max-width: 520px) {
+  .dragon-guide-entry { min-width: 100% !important; }
+  .dragon-mini { width: 190px !important; height: 126px !important; }
+}
+
+.achievement-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 6px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: linear-gradient(180deg,#fff8e6,#fffdf7);
+  border: 1px solid rgba(215,169,59,.35);
+  color: #51310d;
+  font-weight: 800;
+}
+.achievement-badge span { font-size: 20px; }
+
+
+/* Requested final polish */
+.tab-btn {
+  position: relative;
+  transition: transform .16s ease, box-shadow .16s ease, filter .16s ease;
+}
+.tab-btn--active {
+  color: #fff8e5 !important;
+  background: linear-gradient(180deg, #d6281f, #8f120b) !important;
+  box-shadow: 0 0 0 3px rgba(255, 190, 90, .28), 0 12px 26px rgba(198, 32, 22, .26) !important;
+  transform: translateY(-1px);
+}
+.tab-btn--active::after {
+  content: "";
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  bottom: -7px;
+  height: 4px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, #ffd86b, transparent);
+}
+.dragon-mini.skin-king, .dragon-mascot.skin-king {
+  filter: drop-shadow(0 16px 22px rgba(214, 40, 31, .42)) saturate(1.28) !important;
+}
+.accent-letter:not(.accent-letter--vowel) {
+  opacity: .48;
+  cursor: not-allowed !important;
+}
+.accent-letter--vowel {
+  cursor: pointer;
+  box-shadow: 0 0 0 2px rgba(215,169,59,.18);
+}
+.accent-letter--selected {
+  color: #fff8e5 !important;
+  background: linear-gradient(180deg, #d6281f, #8f120b) !important;
+}
+
+
+/* FINAL OVERRIDES 2026-04-18: guaranteed visible changes */
+.dragon-mini,
+.dragon-mascot {
+  width: 250px !important;
+  height: 165px !important;
+  background-size: contain !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+.dragon-mini.skin-king,
+.dragon-mascot.skin-king,
+.dragon-mini:not(.skin-boss):not(.skin-sage):not(.skin-academy):not(.skin-ege):not(.skin-gold),
+.dragon-mascot:not(.skin-boss):not(.skin-sage):not(.skin-academy):not(.skin-ege):not(.skin-gold) {
+  background-image: url("assets/dragon-king.svg") !important;
+  filter: drop-shadow(0 18px 26px rgba(216, 32, 24, .46)) saturate(1.38) !important;
+}
+.dragon-mini.skin-boss, .dragon-mascot.skin-boss { background-image: url("assets/dragon-boss.svg") !important; }
+.dragon-mini.skin-sage, .dragon-mascot.skin-sage { background-image: url("assets/dragon-ice.svg") !important; }
+.dragon-mini.skin-academy, .dragon-mascot.skin-academy { background-image: url("assets/dragon-academy.svg") !important; }
+.dragon-mini.skin-ege, .dragon-mascot.skin-ege { background-image: url("assets/dragon-ege.svg") !important; }
+.dragon-mini.skin-gold, .dragon-mascot.skin-gold { background-image: url("assets/dragon-gold.svg") !important; }
+
+.tab-switch {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 12px !important;
+  padding: 8px !important;
+  border-radius: 20px !important;
+  background: linear-gradient(180deg, #fff8e6, #fffdf7) !important;
+  border: 1px solid rgba(217, 170, 54, .34) !important;
+}
+.tab-switch .tab-btn {
+  position: relative !important;
+  min-height: 50px !important;
+  color: #3b2a12 !important;
+  background: linear-gradient(180deg, #ffffff, #f4ecdc) !important;
+  border: 1px solid rgba(217, 170, 54, .30) !important;
+  box-shadow: 0 7px 0 rgba(91, 65, 15, .12), 0 12px 24px rgba(36, 20, 9, .10) !important;
+  transition: transform .16s ease, box-shadow .16s ease, filter .16s ease !important;
+}
+.tab-switch .tab-btn.tab-btn--active {
+  color: #fff8e5 !important;
+  background: linear-gradient(180deg, #f04438, #b42318 55%, #7a120b) !important;
+  border-color: rgba(255, 216, 107, .70) !important;
+  box-shadow: 0 0 0 3px rgba(255, 216, 107, .36), 0 8px 0 #671108, 0 16px 32px rgba(180, 35, 24, .30) !important;
+  transform: translateY(-1px) !important;
+}
+.tab-switch .tab-btn.tab-btn--active::after {
+  content: "" !important;
+  position: absolute !important;
+  left: 18px !important;
+  right: 18px !important;
+  bottom: -8px !important;
+  height: 5px !important;
+  border-radius: 999px !important;
+  background: linear-gradient(90deg, transparent, #ffd86b, transparent) !important;
+}
+
+.accent-letter:not(.accent-letter--vowel) {
+  opacity: .38 !important;
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+}
+.accent-letter--vowel {
+  cursor: pointer !important;
+  box-shadow: 0 0 0 2px rgba(217, 170, 54, .26) !important;
+}
+.accent-letter--selected {
+  color: #fff8e5 !important;
+  background: linear-gradient(180deg, #f04438, #9b1c12) !important;
+  box-shadow: 0 0 0 3px rgba(255, 216, 107, .32) !important;
+}
+
+#savePunctuationFavoriteBtn {
+  display: inline-flex !important;
+}
+#punctuationFavoriteStatus,
+#punctuationCardStatus {
+  width: 100% !important;
+}
+
+/* FINAL BIG UPDATE */
+button,.pill-link,.link.pill-link,.btn,a.pill-link{color:#fff8e5!important;background:linear-gradient(180deg,#e23b2f,#9b1c12 56%,#641008)!important;border:1px solid rgba(255,216,107,.44)!important;box-shadow:0 7px 0 #5a0e08,0 14px 28px rgba(155,28,18,.24)!important;text-shadow:0 1px 0 rgba(0,0,0,.18)}
+button.secondary,.secondary,button.ghost,.ghost,.tab-btn{color:#fff8e5!important;background:linear-gradient(180deg,#e23b2f,#9b1c12 56%,#641008)!important}
+.tab-switch{display:grid!important;grid-template-columns:1fr 1fr!important;gap:12px!important;padding:8px!important;border-radius:20px!important;background:linear-gradient(180deg,#fff8e6,#fffdf7)!important;border:1px solid rgba(217,170,54,.34)!important}
+.tab-switch .tab-btn{position:relative!important;min-height:50px!important;opacity:.76}
+.tab-switch .tab-btn.tab-btn--active{opacity:1!important;box-shadow:0 0 0 3px rgba(255,216,107,.38),0 8px 0 #671108,0 16px 32px rgba(180,35,24,.30)!important;transform:translateY(-1px)!important}
+.tab-switch .tab-btn.tab-btn--active:after{content:""!important;position:absolute!important;left:18px!important;right:18px!important;bottom:-8px!important;height:5px!important;border-radius:999px!important;background:linear-gradient(90deg,transparent,#ffd86b,transparent)!important}
+.dragon-mini:after,.dragon-mascot:after{content:none!important;display:none!important}
+.skin-forest,.dragon-mini.skin-forest,.dragon-mascot.skin-forest{background-image:url("assets/dragon-forest.svg")!important}.skin-storm,.dragon-mini.skin-storm,.dragon-mascot.skin-storm{background-image:url("assets/dragon-storm.svg")!important}.skin-crystal,.dragon-mini.skin-crystal,.dragon-mascot.skin-crystal{background-image:url("assets/dragon-crystal.svg")!important}.skin-shadow,.dragon-mini.skin-shadow,.dragon-mascot.skin-shadow{background-image:url("assets/dragon-shadow.svg")!important}
+.dragon-helper-guide{display:grid;grid-template-columns:220px 1fr;gap:18px;align-items:center;padding:16px;border-radius:22px;background:linear-gradient(135deg,#eaf7ff,#fff);border:1px solid rgba(103,216,249,.30)}.dragon-helper-guide .dragon-mini{width:220px!important;height:150px!important}
+
+  22%{opacity:1;transform:translate(-35px,8px) rotate(-14deg) scale(.9)}
+  55%{opacity:.95;transform:translate(18px,-8px) rotate(8deg) scale(1.05)}
+  82%{opacity:.7;transform:translate(55px,-18px) rotate(18deg) scale(.95)}
+  100%{opacity:0;transform:translate(85px,-26px) rotate(28deg) scale(.75)}
+}
+
+.options-status{margin-top:16px!important;font-size:1rem!important}
+
+.options-status{margin-top:16px!important;font-size:1rem!important}
+.training-boss-visual.skin-boss{background-image:url("assets/dragon-boss.svg")!important}
+.training-boss-visual.skin-forest{background-image:url("assets/dragon-forest.svg")!important}
+.training-boss-visual.skin-storm{background-image:url("assets/dragon-storm.svg")!important}
+.training-boss-visual.skin-crystal{background-image:url("assets/dragon-crystal.svg")!important}
+.training-boss-visual.skin-shadow{background-image:url("assets/dragon-shadow.svg")!important}
+.training-boss-visual.skin-ege{background-image:url("assets/dragon-ege.svg")!important}
+
+
+/* FINAL OVERRIDES: yellow training buttons */
+#startTrainingQuickBtn,
+#startTrainingBtn {
+  color:#1f2937 !important;
+  background:linear-gradient(180deg,#ffe69a,#f6c84c 58%,#d99a21) !important;
+  border-color:rgba(255,232,150,.9) !important;
+  box-shadow:0 7px 0 #b7791f,0 14px 28px rgba(246,200,76,.28) !important;
+  text-shadow:none !important;
+}
+
+/* Fixed ice helper: not affected by settings skin */
+.dragon-helper-popup .dragon-mini,
+.dragon-helper-popup .dragon-mini.skin-sage {
+  background-image:url("assets/dragon-ice.svg") !important;
+  filter:drop-shadow(0 14px 20px rgba(96,165,250,.34)) !important;
+}
+
+/* More visible boss blocks */
+.training-boss-arena,
+#egeBossResultArena,
+#egeExamBossArena {
+  display:grid !important;
+  grid-template-columns:minmax(150px,240px) 1fr !important;
+  gap:16px !important;
+  align-items:center !important;
+  min-height:170px !important;
+}
+.training-boss-visual {
+  display:block !important;
+  min-height:150px !important;
+  width:100% !important;
+  background-size:contain !important;
+  background-repeat:no-repeat !important;
+  background-position:center !important;
+}
+.training-boss-visual.damage {
+  animation: bossDamageShake .62s ease-in-out !important;
+}
+.boss-health-bar {
+  display:block !important;
+  min-height:16px !important;
+}
+.boss-health-fill {
+  display:block !important;
+  min-width:1% !important;
+}
+.boss-damage-pop.show {
+  animation: damagePop .95s ease-out !important;
+}
+
+/* Chest animation and reward notification */
+.chest-open-animation {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:68px;
+  height:68px;
+  border-radius:22px;
+  margin:10px 0 8px;
+  font-size:42px;
+  background:linear-gradient(180deg,#fff7cc,#f6c84c);
+  box-shadow:0 12px 24px rgba(183,121,31,.28), inset 0 0 0 2px rgba(255,255,255,.55);
+  animation: chestOpenPop .95s cubic-bezier(.2,.8,.2,1);
+}
+@keyframes chestOpenPop {
+  0%{transform:scale(.55) rotate(-10deg);opacity:0}
+  28%{transform:scale(1.12) rotate(5deg);opacity:1}
+  55%{transform:scale(.98) rotate(-2deg)}
+  100%{transform:scale(1) rotate(0)}
+}
+.chest-reward-status {
+  display:block !important;
+  padding:12px 14px !important;
+  margin-top:10px !important;
+  border-radius:18px !important;
+  background:linear-gradient(180deg,#fff7cc,#fffdf3) !important;
+  border:1px solid rgba(183,121,31,.35) !important;
+  color:#3a2200 !important;
+  font-weight:800 !important;
+  box-shadow:0 12px 28px rgba(183,121,31,.16) !important;
+}
+
+/* FINAL BUILD OVERRIDES — guide scroll, boss, chest */
+#startTrainingQuickBtn,
+#startTrainingBtn {
+  color:#1f2937 !important;
+  background:linear-gradient(180deg,#ffe69a,#f6c84c 58%,#d99a21) !important;
+  border-color:rgba(255,232,150,.9) !important;
+  box-shadow:0 7px 0 #b7791f,0 14px 28px rgba(246,200,76,.28) !important;
+  text-shadow:none !important;
+}
+
+.scroll-guide-page {
+  background: radial-gradient(circle at 15% 0%, rgba(255,232,168,.38), transparent 32%), linear-gradient(180deg,#f7e5c4,#fff8e8) !important;
+}
+.scroll-guide {
+  padding-top: 22px !important;
+}
+.ancient-scroll,
+.scroll-block {
+  background:
+    linear-gradient(90deg, rgba(116,72,20,.08), transparent 10%, transparent 90%, rgba(116,72,20,.08)),
+    linear-gradient(180deg,#fff4d2,#f5d99d) !important;
+  border: 2px solid rgba(116,72,20,.32) !important;
+  border-radius: 26px !important;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.42), 0 18px 38px rgba(84,49,12,.18) !important;
+  color:#3a2200 !important;
+}
+.hero-scroll {
+  display:grid !important;
+  grid-template-columns:220px 1fr !important;
+  gap:22px !important;
+  align-items:center !important;
+  padding:24px !important;
+  margin-bottom:18px !important;
+}
+.scroll-grid {
+  display:grid !important;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr)) !important;
+  gap:16px !important;
+}
+.scroll-block {
+  padding:18px !important;
+}
+.scroll-block h2,
+.hero-scroll h1 {
+  color:#5b3200 !important;
+}
+.hero-scroll .dragon-mini {
+  background-image:url("assets/dragon-ice.svg") !important;
+  width:210px !important;
+  height:150px !important;
+}
+
+.dragon-helper-popup .dragon-mini,
+.dragon-helper-popup .dragon-mini.skin-sage {
+  background-image:url("assets/dragon-ice.svg") !important;
+  filter:drop-shadow(0 14px 20px rgba(96,165,250,.34)) !important;
+}
+
+.training-boss-arena,
+#trainingBossArena,
+#egeBossResultArena,
+#egeExamBossArena {
+  display:grid !important;
+  grid-template-columns:minmax(150px,240px) 1fr !important;
+  gap:16px !important;
+  align-items:center !important;
+  min-height:170px !important;
+  padding:16px !important;
+  border-radius:24px !important;
+}
+.training-boss-visual {
+  display:block !important;
+  min-height:150px !important;
+  width:100% !important;
+  background-size:contain !important;
+  background-repeat:no-repeat !important;
+  background-position:center !important;
+}
+.training-boss-visual.skin-boss{background-image:url("assets/dragon-boss.svg")!important}
+.training-boss-visual.skin-forest{background-image:url("assets/dragon-forest.svg")!important}
+.training-boss-visual.skin-storm{background-image:url("assets/dragon-storm.svg")!important}
+.training-boss-visual.skin-crystal{background-image:url("assets/dragon-crystal.svg")!important}
+.training-boss-visual.skin-shadow{background-image:url("assets/dragon-shadow.svg")!important}
+.training-boss-visual.skin-ege{background-image:url("assets/dragon-ege.svg")!important}
+.training-boss-visual.damage {
+  animation: bossDamageShake .62s ease-in-out !important;
+}
+@keyframes bossDamageShake {
+  0%,100%{transform:translateX(0)}
+  22%{transform:translateX(-7px);filter:drop-shadow(0 0 22px rgba(255,64,32,.7))}
+  48%{transform:translateX(6px)}
+  72%{transform:translateX(-3px)}
+}
+.boss-health-bar {
+  display:block !important;
+  min-height:16px !important;
+  width:100% !important;
+  border-radius:999px !important;
+  background:rgba(255,255,255,.22) !important;
+  overflow:hidden !important;
+  border:1px solid rgba(255,216,107,.34) !important;
+}
+.boss-health-fill {
+  display:block !important;
+  height:100% !important;
+  min-width:1% !important;
+  background:linear-gradient(90deg,#ff4d35,#ffd86b) !important;
+  transition:width .35s ease !important;
+}
+.boss-damage-pop.show {
+  animation: damagePop .95s ease-out !important;
+}
+@keyframes damagePop {
+  0%{opacity:0;transform:translateY(8px) scale(.8)}
+  25%{opacity:1;transform:translateY(-4px) scale(1.08)}
+  100%{opacity:0;transform:translateY(-18px) scale(.95)}
+}
+
+.chest-open-animation {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:70px;
+  height:70px;
+  border-radius:22px;
+  margin:10px 0 8px;
+  font-size:42px;
+  background:linear-gradient(180deg,#fff7cc,#f6c84c);
+  box-shadow:0 12px 24px rgba(183,121,31,.28), inset 0 0 0 2px rgba(255,255,255,.55);
+  animation: chestOpenPop .95s cubic-bezier(.2,.8,.2,1);
+}
+@keyframes chestOpenPop {
+  0%{transform:scale(.55) rotate(-10deg);opacity:0}
+  28%{transform:scale(1.12) rotate(5deg);opacity:1}
+  55%{transform:scale(.98) rotate(-2deg)}
+  100%{transform:scale(1) rotate(0)}
+}
+.chest-reward-status {
+  display:block !important;
+  padding:12px 14px !important;
+  margin-top:10px !important;
+  border-radius:18px !important;
+  background:linear-gradient(180deg,#fff7cc,#fffdf3) !important;
+  border:1px solid rgba(183,121,31,.35) !important;
+  color:#3a2200 !important;
+  font-weight:800 !important;
+  box-shadow:0 12px 28px rgba(183,121,31,.16) !important;
+}
+
+/* FINAL FIX: boss HP contrast and first-load visibility */
+.training-boss-arena,
+#trainingBossArena,
+#egeBossResultArena,
+#egeExamBossArena {
+  background: linear-gradient(135deg, #190906, #3b160f 58%, #111827) !important;
+  border: 2px solid rgba(255,216,107,.48) !important;
+  box-shadow: 0 18px 42px rgba(20,8,7,.28), inset 0 0 0 1px rgba(255,255,255,.08) !important;
+}
+.boss-health-bar {
+  height: 20px !important;
+  min-height: 20px !important;
+  background: #2b120d !important;
+  border: 2px solid rgba(255, 232, 150, .85) !important;
+  box-shadow: inset 0 2px 8px rgba(0,0,0,.42), 0 8px 18px rgba(0,0,0,.18) !important;
+}
+.boss-health-fill {
+  height: 100% !important;
+  min-width: 2% !important;
+  background: linear-gradient(90deg, #ff2f1f 0%, #ff8a2a 48%, #ffe16b 100%) !important;
+  box-shadow: 0 0 14px rgba(255, 107, 43, .55) !important;
+}
+#trainingBossHpText,
+#egeBossResultHpText,
+#egeExamBossHpText {
+  color: #fff8e5 !important;
+  font-weight: 900 !important;
+  text-shadow: 0 1px 2px rgba(0,0,0,.45) !important;
+}
+#trainingBossTitle,
+#egeBossResultTitle,
+#egeExamBossTitle {
+  color: #fff8e5 !important;
+  text-shadow: 0 1px 2px rgba(0,0,0,.45) !important;
+}
+
+/* FINAL CHEST ANIMATION FIX */
+.chest-status-line,
+.chest-reward-status {
+  min-height: 34px !important;
+}
+.chest-reward-status {
+  display:grid !important;
+  grid-template-columns:auto 1fr !important;
+  gap:12px !important;
+  align-items:center !important;
+  padding:14px 16px !important;
+  margin-top:12px !important;
+  border-radius:20px !important;
+  background:linear-gradient(180deg,#fff7cc,#fffdf3) !important;
+  border:2px solid rgba(183,121,31,.45) !important;
+  color:#3a2200 !important;
+  font-weight:900 !important;
+  box-shadow:0 14px 30px rgba(183,121,31,.20), inset 0 0 0 1px rgba(255,255,255,.65) !important;
+}
+.chest-open-animation {
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  width:76px !important;
+  height:76px !important;
+  border-radius:24px !important;
+  font-size:46px !important;
+  background:radial-gradient(circle at 50% 28%, #fff8bf, #f6c84c 62%, #b7791f 100%) !important;
+  box-shadow:0 16px 28px rgba(183,121,31,.30), inset 0 0 0 3px rgba(255,255,255,.62) !important;
+  transform-origin:center bottom !important;
+  animation:chestOpenPopFixed 1.35s cubic-bezier(.18,.9,.22,1) both !important;
+  will-change:transform, opacity, filter;
+}
+.chest-open-animation::after {
+  content:"✨";
+  position:absolute;
+  transform:translate(46px,-34px);
+  font-size:22px;
+  animation:chestSparkle 1.35s ease-out both;
+}
+@keyframes chestOpenPopFixed {
+  0%   { opacity:0; transform:translateY(18px) scale(.42) rotate(-14deg); filter:brightness(.9); }
+  18%  { opacity:1; transform:translateY(-8px) scale(1.18) rotate(8deg); filter:brightness(1.15); }
+  38%  { transform:translateY(0) scale(.94) rotate(-5deg); }
+  58%  { transform:translateY(-4px) scale(1.06) rotate(3deg); }
+  78%  { transform:translateY(0) scale(.99) rotate(-1deg); }
+  100% { opacity:1; transform:translateY(0) scale(1) rotate(0); filter:brightness(1); }
+}
+@keyframes chestSparkle {
+  0%{opacity:0; transform:translate(20px,0) scale(.3) rotate(0)}
+  30%{opacity:1; transform:translate(48px,-38px) scale(1.2) rotate(18deg)}
+  100%{opacity:0; transform:translate(70px,-58px) scale(.6) rotate(45deg)}
+}
+
+/* TEXT SCALE FIX */
+html {
+  font-size: calc(16px * var(--accent-text-scale, 1)) !important;
+}
+body {
+  font-size: 1rem !important;
+}
+
+
+/* DAILY HOTBARS */
+.progress--chest {
+  background:#2b120d !important;
+  border:1px solid rgba(255,216,107,.55) !important;
+}
+.progress--chest span {
+  background:linear-gradient(90deg,#f59e0b,#fde68a) !important;
+  box-shadow:0 0 12px rgba(245,158,11,.45) !important;
+}
+.mission-item .progress span {
+  transition:width .35s ease !important;
+}
+
+/* Dragon tail: original SVG look, smoother JS-driven motion.
+   The old SVG appearance is restored; the movement is performed by Web Animations
+   in dragon-ui.js so stale CSS animation overrides cannot make it snap. */
+.dragon-tail-swipe {
+  position: fixed !important;
+  z-index: 2147483647 !important;
+  pointer-events: none !important;
+  display: block !important;
+  width: var(--tail-w, min(520px, calc(100vw - 24px))) !important;
+  height: var(--tail-h, calc(var(--tail-w, 460px) * .326)) !important;
+  max-width: calc(100vw - 24px) !important;
+  contain: layout style paint !important;
+  overflow: visible !important;
+  opacity: 0;
+  transform-origin: 82% 55% !important;
+  background: url("assets/dragon-tail.svg") center / 100% 100% no-repeat !important;
+  filter: drop-shadow(0 16px 22px rgba(87,18,10,.30)) !important;
+  will-change: transform, opacity, filter !important;
+  backface-visibility: hidden !important;
+  transform: translate3d(0,0,0);
+}
+.dragon-tail-swipe--reverse {
+  transform-origin: 18% 55% !important;
+  scale: -1 1;
+}
+.dragon-tail-wave {
+  position: absolute !important;
+  left: 8%;
+  top: 24%;
+  width: 69%;
+  height: 58%;
+  border-radius: 50% 46% 54% 50%;
+  background:
+    repeating-linear-gradient(103deg, rgba(255,225,107,.42) 0 7px, rgba(255,225,107,0) 7px 25px),
+    linear-gradient(90deg, rgba(125,22,13,0), rgba(255,161,58,.19), rgba(255,225,107,.11));
+  clip-path: polygon(0 56%, 8% 39%, 20% 30%, 34% 27%, 49% 34%, 64% 47%, 78% 56%, 100% 44%, 91% 62%, 77% 74%, 60% 80%, 43% 72%, 27% 61%, 12% 66%);
+  opacity: .72;
+  pointer-events: none !important;
+  will-change: transform, opacity !important;
+}
+.dragon-tail-tip-flick {
+  position: absolute !important;
+  right: 1%;
+  top: 16%;
+  width: 17%;
+  height: 58%;
+  background: linear-gradient(135deg, #ffe16b 0%, #f59e0b 42%, #8a1c10 82%);
+  clip-path: polygon(0 54%, 100% 0, 72% 50%, 100% 100%);
+  filter: drop-shadow(0 8px 12px rgba(87,18,10,.28));
+  transform-origin: 10% 54%;
+  pointer-events: none !important;
+  will-change: transform, opacity !important;
+}
+

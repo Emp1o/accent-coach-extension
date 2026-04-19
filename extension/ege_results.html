@@ -3,29 +3,63 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Результаты ЕГЭ — Accent Coach</title>
+    <title>Результаты ЕГЭ — ОрфоДракон</title>
     <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="dragon-v3.css" />
   </head>
   <body>
     <main class="container wide">
-      <section class="hero-card slim">
+      <section class="hero-card slim dragon-royal-hero">
         <div>
-          <p class="eyebrow">ЕГЭ PRO</p>
-          <h1>Результаты экзамена</h1>
-          <p class="hero-copy">Итог теста, слабые темы и подробный разбор ответов.</p>
+          <p class="eyebrow">Итог испытания</p>
+          <h1>Результаты ЕГЭ PRO</h1>
+          <p class="hero-copy">Таймер остановлен, ответы проверены, а дракон уже готовит разбор слабых тем.</p>
         </div>
-        <a class="pill-link" href="cards.html" target="_blank">Все карточки</a>
+        <div class="dragon-mini dragon-mini--ice" aria-hidden="true"></div>
       </section>
-      <section class="panel">
-        <div class="panel-header"><h2>Итог</h2><span class="badge">результат</span></div>
-        <div id="egeSummary" class="muted"></div>
+
+      <section id="egeBossResultArena" class="training-boss-arena boss-mixed">
+        <div id="egeBossResultVisual" class="training-boss-visual boss-mixed damage" aria-hidden="true"></div>
+        <div class="training-boss-info">
+          <div class="panel-header compact">
+            <h2 id="egeBossResultTitle">Босс получил урон</h2>
+            <span id="egeBossResultDamage" class="boss-damage-pop show">-0 HP</span>
+          </div>
+          <div class="boss-health-bar"><div id="egeBossResultHpBar" class="boss-health-fill"></div></div>
+          <p id="egeBossResultHpText" class="mini-help">HP: —</p>
+        </div>
       </section>
-      <section id="egeWeakTopics" class="panel"></section>
-      <section class="panel">
-        <div class="panel-header"><h2>Разбор ответов</h2><span class="badge">подробно</span></div>
+
+      <section class="panel dragon-glow-card" id="egeSummaryPanel">
+        <div class="panel-header">
+          <h2>Общий результат</h2>
+          <span class="badge" id="egeResultStatus">проверка</span>
+        </div>
+        <div id="egeSummary" class="result-grid"></div>
+      </section>
+
+      <section class="panel dragon-glow-card">
+        <div class="panel-header">
+          <h2>Слабые темы</h2>
+          <span class="badge danger">фокус</span>
+        </div>
+        <div id="egeWeakTopics" class="muted"></div>
+      </section>
+
+      <section class="panel dragon-glow-card">
+        <div class="panel-header">
+          <h2>Подробный разбор</h2>
+          <span class="badge">ответы</span>
+        </div>
         <div id="egeDetails"></div>
       </section>
+
+      <section class="actions compact">
+        <button id="openTrainingFromResultsBtn" class="primary">Открыть тренировку</button>
+        <button id="openТренажёрFromResultsBtn" class="secondary">Открыть тренажёр</button>
+      </section>
     </main>
+    <script src="dragon-ui.js"></script>
     <script src="ege_results.js"></script>
   </body>
 </html>

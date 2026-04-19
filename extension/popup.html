@@ -3,21 +3,49 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Accent Coach for Russian</title>
+    <title>ОрфоДракон — тренажёр русского языка</title>
     <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="dragon-v3.css" />
   </head>
   <body>
     <main class="container app-shell">
       <section class="hero-card">
         <div>
           <p class="eyebrow">Орфоэпия и пунктуация для ЕГЭ</p>
-          <h1>Accent Coach</h1>
+          <h1>ОрфоДракон</h1>
           <p class="hero-copy">Выделяй текст на странице, проверяй ударения и запятые, исправляй ошибки вручную и повторяй карточки.</p><p class="muted" style="color:#dfe7ff;margin-top:8px;">ЕГЭ режим: карточки и повторения стараются приоритизировать орфоэпический словник и школьные правила.</p>
         </div>
-        <a class="link pill-link" href="options.html" target="_blank">Настройки</a>
+        <div class="dragon-guide-entry">
+          <div class="dragon-mini" aria-hidden="true"></div>
+          <div class="dragon-link-row">
+            <a class="link pill-link" href="options.html" target="_blank">⚙️ Настройки</a>
+          </div>
+        </div>
       </section>
 
+      <section class="panel dragon-helper-тренажёр">
+        <div class="dragon-mini skin-sage" aria-hidden="true"></div>
+        <div>
+          <p class="eyebrow">Учебный помощник</p>
+          <h2>Нужна помощь?</h2>
+          <p class="muted">Откройте подробную инструкцию по карточкам, ЕГЭ-режиму, настройкам и импорту учебных словарей.</p>
+          <a id="dragonHelperInstructionBtn" class="link pill-link" href="guide.html" target="_blank">📜 Открыть инструкцию</a>
+        </div>
+      </section>
+
+
+
+
       <section class="stats-grid" id="stats"></section>
+      <section id="dragonBossArena" class="dragon-boss-arena">
+        <div id="dragonBossVisual" class="dragon-boss-visual" aria-hidden="true"></div>
+        <div class="dragon-boss-copy">
+          <p class="eyebrow">Босс недели</p>
+          <h2 id="dragonBossTitle">Обсидиановый дракон ошибок</h2>
+          <p>Каждый правильный ответ и нажатие «Помню» наносят урон боссу. Победи его знаниями, а не кликами.</p>
+          <span id="dragonBossHp" class="dragon-boss-hp">HP: 100000 / 100000</span>
+        </div>
+      </section>
       <section class="panel">
         <div class="panel-header">
           <h2>Бейджи достижений</h2>
@@ -35,7 +63,7 @@
           <div class="actions compact">
             <button id="claimChestBtn" class="secondary">Открыть сундук</button>
           </div>
-          <div id="chestStatus" class="muted"></div>
+          <div id="chestStatus" class="muted chest-reward-status"></div>
         </section>
         <section class="panel">
           <div class="panel-header">
@@ -53,23 +81,24 @@
 
       <section class="actions toolbar">
         <select id="reviewModeSelect"><option value="all">Повторение: всё</option><option value="stress">Только ударения</option><option value="punctuation">Только запятые</option></select>
-        <button id="reviewNowBtn">Открыть карточки</button>
+        <button id="reviewNowBtn">🐉 Открыть тренажёр</button>
         <button id="startTrainingQuickBtn" class="primary">🚀 Тренировка</button>
         <button id="startEgeExamBtn" class="secondary">📝 ЕГЭ-режим</button>
-        <button id="openCardsBtn" class="secondary">Все карточки</button>
-        <button id="testNotificationBtn" class="secondary">Тест уведомления</button>
-        <button id="scheduleReminderBtn" class="secondary">Напомнить через 1 мин</button>
-        <button id="exportBtn" class="ghost">Экспорт</button>
+        <button id="openCardsBtn" class="secondary">📚 Все карточки</button>
+        <button id="testNotificationBtn" class="secondary">🔔 Тест уведомления</button>
+        <button id="scheduleReminderBtn" class="secondary">⏰ Напомнить через 1 мин</button>
+        <button id="exportBtn" class="ghost">📤 Экспорт</button>
       </section>
       <p class="muted">Умные напоминания приоритизируют сложные карточки. Нажми «Тест уведомления» для мгновенной проверки или «Напомнить через 1 мин» для тестового напоминания.</p>
-      <p id="actionStatus" class="muted"></p>
+      <p id="actionStatus" class="inline-status dragon-status" hidden></p>
 
       <section class="tab-switch">
-        <button id="tabAccentBtn" class="tab-btn tab-btn--active" type="button">Поставить ударение</button>
-        <button id="tabPunctuationBtn" class="tab-btn" type="button">Поставить запятые</button>
+        <button id="tabAccentBtn" class="tab-btn tab-btn--active" type="button">́ Поставить ударение</button>
+        <button id="tabPunctuationBtn" class="tab-btn" type="button">✍️ Поставить запятые</button>
       </section>
 
       <div id="accentTab">
+<div id="accentTextFeatureRemovedCompat" hidden><textarea id="accentInput"></textarea><textarea id="accentOutput"></textarea><button id="accentBtn"></button><button id="saveAccentTextCardsBtn"></button><button id="accentAndFavoriteBtn"></button><button id="editAccentOutputBtn"></button><button id="saveAccentOutputBtn"></button><button id="copyAccentedBtn"></button><p id="accentTextCardStatus"></p><p id="accentFavoriteStatus"></p></div>
 
       <section class="panel">
         <div class="panel-header">
@@ -77,22 +106,19 @@
           <span class="badge">сохраняет в словарь</span>
         </div>
         <div class="inline-form">
-          <label class="input-label input-label--accent" for="searchInput">Введите слово сюда</label>
-          <input id="searchInput" class="input-focus input-focus--accent" type="text" placeholder="Например: звонит" />
-          <button id="searchBtn">Найти</button>
-          <button id="saveStressCardBtn" class="cta-card">★ Добавить в карточки</button>
-          <button id="saveFavoriteBtn" class="secondary">Сделать приоритетным</button>
-          <p class="muted mini-help">Избранное — это приоритетные карточки, которые чаще появляются в напоминаниях и слабых местах недели.</p>
-          <p id="stressCardStatus" class="inline-status" hidden></p>
-          <p id="favoriteWordStatus" class="inline-status" hidden></p>
+          <input id="searchInput" type="text" placeholder="Например: звонит" />
+          <button id="searchBtn">🔎 Найти</button>
+          <button id="saveStressCardBtn" class="cta-card">⭐ Добавить в карточки</button>
+          <p id="stressCardStatus" class="inline-status dragon-status" hidden></p>
+          <button id="saveFavoriteBtn" class="secondary">🔥 Сделать приоритетным</button>
+          <p id="favoriteWordStatus" class="inline-status dragon-status" hidden></p>
         </div>
-        <div class="warning-box feature-callout">Ударение может стоять неправильно, обязательно перепроверяйте.</div>
+        <div class="warning-box">Ударение может стоять неправильно, обязательно перепроверяйте.</div>
         <div id="searchResults" class="search-results muted">Введите слово для поиска по локальному словарю, карточкам и локальной эвристике.</div>
         <div class="manual-panel">
           <h3>Исправить ударение вручную</h3>
           <p class="muted">Введи слово или найди его выше, затем нажми на правильную гласную. Комбинируемый значок ударения печатать не нужно.</p>
-          <label class="input-label input-label--accent" for="manualAccentWord">Введите слово для ручного исправления</label>
-          <input id="manualAccentWord" class="input-focus input-focus--accent" type="text" placeholder="Например: звонит" />
+          <input id="manualAccentWord" type="text" placeholder="Например: звонит" />
           <div id="accentBuilder" class="accent-builder muted">Введите слово для выбора ударной гласной.</div>
           <div class="actions compact">
             <button id="saveAccentOverrideBtn">Сохранить исправление</button>
@@ -101,28 +127,7 @@
         </div>
       </section>
 
-      <section class="panel">
-        <div class="panel-header">
-          <h2>Большой текст — ударения</h2>
-          <span class="badge">можно сохранить все слова</span>
-        </div>
-        <label class="input-label input-label--accent" for="accentInput">Вставьте текст сюда</label>
-        <textarea id="accentInput" class="input-focus input-focus--accent" rows="5" placeholder="Вставьте текст или выделите его на странице."></textarea>
-        <div class="actions compact">
-          <button id="accentBtn">Поставить ударения</button>
-          <button id="editAccentOutputBtn" class="ghost" type="button">Исправить выделенное слово</button>
-          <button id="saveAccentOutputBtn" class="secondary" type="button">Сохранить правки текста</button>
-          <button id="saveAccentTextCardsBtn" class="cta-card">★ Добавить слова в карточки</button>
-          <button id="accentAndFavoriteBtn" class="secondary">Пометить как сложные</button>
-          <p class="muted mini-help">Сделать сложными — сохранить слова из текста и пометить их как приоритетные для повторения.</p>
-          <p id="accentTextCardStatus" class="inline-status" hidden></p>
-          <p id="accentFavoriteStatus" class="inline-status" hidden></p>
-          <button id="copyAccentedBtn" type="button" class="ghost">Копировать</button>
-        </div>
-        <label class="input-label input-label--result" for="accentOutput">Здесь появится результат с ударениями</label>
-        <textarea id="accentOutput" class="input-focus input-focus--result" rows="6" placeholder="Здесь появится текст с ударениями. Можно выбрать слово и исправить его через конструктор выше."></textarea>
-        <div class="feature-callout feature-callout--accent">Чтобы исправить ударение во всём тексте: выдели слово в результате, нажми «Исправить выделенное слово», затем выбери правильную гласную в блоке ручного исправления и сохрани. После этого нажми «Сохранить правки текста».</div>
-      </section>
+      
 
       </div>
 
@@ -133,27 +138,24 @@
           <span class="badge">запятые + правило (локально)</span>
         </div>
         <div class="warning-box">Пунктуация тоже может зависеть от смысла. После автопостановки обязательно перепроверьте и при необходимости исправьте текст вручную.</div>
-        <label class="input-label input-label--punct" for="punctuationInput">Введите или вставьте предложение сюда</label>
-        <textarea id="punctuationInput" class="input-focus input-focus--punct" rows="5" placeholder="Когда я пришел домой я сразу сел делать уроки потому что было поздно"></textarea>
+        <textarea id="punctuationInput" rows="5" placeholder="Когда я пришел домой я сразу сел делать уроки потому что было поздно"></textarea>
         <div class="actions compact">
-          <button id="punctuateBtn">Поставить запятые</button>
-          <button id="editPunctuationBtn" class="ghost">Исправить вручную</button>
+          <button id="punctuateBtn">✍️ Поставить запятые</button>
+          <button id="editPunctuationBtn" class="ghost">🛠️ Исправить вручную</button>
           <button id="saveEditedPunctuationBtn" class="secondary" hidden>Сохранить правки</button>
-          <button id="savePunctuationBtn" class="cta-card">★ Добавить в карточки</button>
-          <button id="savePunctuationFavoriteBtn" class="secondary">Сделать приоритетным</button>
-          <button id="copyPunctuationBtn" type="button" class="ghost">Копировать</button>
-          <p class="muted mini-help">Приоритетные карточки чаще попадают в уведомления, слабые места недели и повторение.</p>
-          <p id="punctuationCardStatus" class="inline-status" hidden></p>
+          <button id="savePunctuationBtn" class="secondary">⭐ Добавить в карточки</button>
+          <p id="punctuationCardStatus" class="inline-status dragon-status" hidden></p>
+          <button id="savePunctuationFavoriteBtn" class="secondary">🔥 Сделать приоритетным</button>
           <p id="punctuationFavoriteStatus" class="inline-status" hidden></p>
+          <button id="copyPunctuationBtn" type="button" class="ghost">📋 Копировать</button>
         </div>
-        <label class="input-label input-label--result" for="punctuationOutput">Здесь появится результат с запятыми</label>
-        <textarea id="punctuationOutput" class="input-focus input-focus--result" rows="6" readonly placeholder="Здесь появится текст с запятыми. Для ручной правки нажмите «Исправить вручную»."></textarea>
-        <div id="punctuationEditHint" class="feature-callout feature-callout--punct">Сначала нажмите «Поставить запятые». Если ответ неверный, нажмите «Исправить вручную», поправьте текст и сохраните правки отдельной кнопкой. Если меняешь запятые вручную, ниже обязательно впиши своё правило.</div>
-        <div class="rule-box">
-          <label class="rule-box__label" for="manualRuleInput">Обязательное правило при ручной правке</label>
-          <input id="manualRuleInput" class="rule-box__input input-focus input-focus--punct" placeholder="Например: запятая перед 'что'" />
-          <div class="rule-box__hint">Если исправил запятые вручную, обязательно напиши правило ниже — так карточка будет полезнее для повторения.</div>
-        </div>
+        <textarea id="punctuationOutput" rows="6" readonly placeholder="Здесь появится текст с запятыми. Для ручной правки нажмите «Исправить вручную»."></textarea>
+        <div id="punctuationEditHint" class="muted">Сначала нажмите «Поставить запятые». Если ответ неверный, нажмите «Исправить вручную», поправьте текст и сохраните правки отдельной кнопкой.</div>
+        <div 
+<div style="margin-top:10px;">
+  <label style="font-size:12px;color:#666;">Правило (если исправил вручную):</label>
+  <input id="manualRuleInput" placeholder="Например: запятая перед 'что'" style="width:100%;padding:6px;border-radius:8px;border:1px solid #ccc;"/>
+</div>
 
 <div id="punctuationRules" class="muted"></div>
       </section>
@@ -187,5 +189,6 @@
       </section>
     </main>
     <script src="popup.js"></script>
+      <script src="dragon-ui.js"></script>
   </body>
 </html>

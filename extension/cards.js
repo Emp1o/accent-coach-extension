@@ -22,7 +22,7 @@ function render() {
         <strong>${escapeHtml(card.kind === 'punctuation' ? (card.prompt || card.word) : card.word)}</strong>
         <span>${escapeHtml(card.kind === 'punctuation' ? (card.answer || '') : (card.stressed || ''))}</span>
       </div>
-      <div class="card-meta"><span>Тип: ${escapeHtml(card.kind)} · Источник: ${escapeHtml(card.source || 'unknown')} · Повтор: ${new Date(card.dueAt || Date.now()).toLocaleString()}</span></div><div class="actions compact"><button class="danger delete-card-btn" data-id="${escapeHtml(card.id)}">Удалить</button></div>
+      <div class="card-meta"><span>Тип: ${escapeHtml(card.kind)} · Источник: ${escapeHtml(card.source || 'не указан')} · Повтор: ${new Date(card.dueAt || Date.now()).toLocaleString()}</span></div><div class="actions compact"><button class="danger delete-card-btn" data-id="${escapeHtml(card.id)}">Удалить</button></div>
     </article>
   `).join('');
 }
@@ -39,7 +39,7 @@ init();
 
 
 
-document.getElementById("reviewWeakBtn").addEventListener("click", async()=>{ await openTraining("weak"); });
+document.getElementById("reviewWeakBtn").addEventListener("click", async()=>{ await chrome.runtime.sendMessage({type:"OPEN_REVIEW_CARD", mode:"weak"}); });
 
 
 document.addEventListener('click', async (event) => {

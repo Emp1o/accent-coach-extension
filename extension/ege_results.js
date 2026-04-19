@@ -1,4 +1,3 @@
-var chrome = globalThis.chrome || globalThis.browser;
 function escapeHtml(value) {
   return String(value ?? '')
     .replaceAll('&', '&amp;')
@@ -6,50 +5,159 @@ function escapeHtml(value) {
     .replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;');
 }
+
 const egeSummary = document.getElementById('egeSummary');
 const egeWeakTopics = document.getElementById('egeWeakTopics');
 const egeDetails = document.getElementById('egeDetails');
+const egeResultStatus = document.getElementById('egeResultStatus');
 
-function renderWeakTopics(items) {
-  if (!items?.length) {
-    egeWeakTopics.innerHTML = '<div class="panel-header"><h2>Слабые темы</h2><span class="badge">анализ</span></div><p class="muted">Слабых тем не найдено — отличный результат.</p>';
-    return;
-  }
-  egeWeakTopics.innerHTML = `
-    <div class="panel-header"><h2>Слабые темы</h2><span class="badge danger">анализ</span></div>
-    ${items.map((item) => `
-      <article class="card-item">
-        <div class="card-main">
-          <strong>${escapeHtml(item.topic)}</strong>
-          <span>Ошибок: ${item.wrong} из ${item.total}</span>
-        </div>
-      </article>`).join('')}
-  `;
+function bossTitle(variant) {
+  if (variant === 'stress') return 'Босс ударений';
+  if (variant === 'punctuation') return 'Босс запятых';
+  return 'Смешанный босс ошибок';
 }
 
-async function loadResult() {
-  const response = await chrome.runtime.sendMessage({ type: 'GET_EGE_EXAM_RESULT' });
-  const result = response?.result;
+async function renderEgeBoss(result) {
+  let boss = result?.boss || {};
+  if (!boss.bossHp) {
+    try {
+      const state = await chrome.runtime.sendMessage({ type: 'GET_STATE' });
+      boss = state?.gamification || boss;
+    } catch (error) {}
+  }
+  const variant = boss.bossVariant || 'mixed';
+  const hp = Math.max(0, Number(boss.bossHp ?? 1200));
+  const maxHp = Math.max(1, Number(boss.bossMaxHp ?? 1200));
+  const damage = Number(result?.bossDamage || boss.bossLastDamage || 0);
+  const arena = document.getElementById('egeBossResultArena');
+  const visual = document.getElementById('egeBossResultVisual');
+  const title = document.getElementById('egeBossResultTitle');
+  const pop = document.getElementById('egeBossResultDamage');
+  const bar = document.getElementById('egeBossResultHpBar');
+  const text = document.getElementById('egeBossResultHpText');
+
+  if (arena) {
+    arena.classList.remove('boss-stress', 'boss-punctuation', 'boss-mixed');
+    arena.classList.add(`boss-${variant}`);
+  }
+  if (visual) {
+    visual.classList.remove('boss-stress', 'boss-punctuation', 'boss-mixed', 'skin-boss', 'skin-forest', 'skin-storm', 'skin-crystal', 'skin-shadow', 'skin-ege');
+    visual.classList.add(`boss-${variant}`, 'damage');
+    const skinClass = {dragon_boss:'skin-boss', dragon_forest:'skin-forest', dragon_storm:'skin-storm', dragon_crystal:'skin-crystal', dragon_shadow:'skin-shadow', dragon_ege:'skin-ege'}[boss.bossSkin || 'dragon_boss'] || 'skin-boss';
+    visual.classList.add(skinClass);
+  }
+  if (title) title.textContent = `${bossTitle(variant)} · урон за ЕГЭ`;
+  if (pop) {
+    pop.hidden = false;
+    pop.textContent = `-${damage} HP`;
+    pop.classList.add('show');
+  }
+  if (bar) bar.style.width = `${Math.max(2, Math.min(100, Math.round((hp / maxHp) * 100)))}%`;
+  if (text) text.textContent = `Босс ${boss.bossStage || 1} уровня · HP: ${hp} / ${maxHp}`;
+}
+
+
+function normalizeEgeAnswer(value) {
+  return String(value || '')
+    .replace(/ё/g, 'е')
+    .replace(/Ё/g, 'Е')
+    .replace(/\s+/g, ' ')
+    .replace(/\s+([,.;:!?])/g, '$1')
+    .replace(/([,.;:!?])(?=\S)/g, '$1 ')
+    .trim()
+    .replace(/[.。]+$/g, '')
+    .trim();
+}
+
+function commaSignature(value) {
+  const normalized = normalizeEgeAnswer(value);
+  const positions = [];
+  for (let i = 0; i < normalized.length; i += 1) {
+    if (normalized[i] === ',') positions.push(i);
+  }
+  return positions.join('|');
+}
+
+function isEgeAnswerCorrect(question, userAnswer) {
+  const right = question.correct || question.answer || '';
+  const kind = question.kind || question.topic || '';
+  if (String(kind).includes('punctuation') || String(kind).includes('пунктуа')) {
+    return commaSignature(userAnswer) === commaSignature(right);
+  }
+  return normalizeEgeAnswer(userAnswer) === normalizeEgeAnswer(right);
+}
+
+function markByPercent(percent) {
+  if (percent >= 90) return '5';
+  if (percent >= 70) return '4';
+  if (percent >= 50) return '3';
+  return '2';
+}
+
+async function renderResult(result) {
   if (!result) {
-    egeSummary.innerHTML = '<p>Результаты пока не найдены. Сначала пройди экзамен.</p>';
+    egeSummary.innerHTML = '<p class="muted">Результат пока не найден. Пройди ЕГЭ-режим ещё раз.</p>';
+    egeWeakTopics.innerHTML = '<p class="muted">Данные пока не накоплены.</p>';
+    egeDetails.innerHTML = '';
     return;
   }
+
+  await renderEgeBoss(result);
+  const total = Number(result.total || result.questions?.length || 0);
+  const correct = Number(result.correct || 0);
+  const percent = total ? Math.round((correct / total) * 100) : 0;
+  const mark = result.mark || markByPercent(percent);
+  const expired = Boolean(result.expired);
+
+  if (egeResultStatus) {
+    egeResultStatus.textContent = expired ? 'время вышло' : 'завершено вручную';
+  }
+
   egeSummary.innerHTML = `
-    <p><strong>Правильно:</strong> ${result.correct} из ${result.total}</p>
-    <p><strong>Процент:</strong> ${result.scorePercent}%</p>
-    <p><strong>Оценка:</strong> ${escapeHtml(result.verdict)}</p>
-    <p><strong>Статус:</strong> ${result.expired ? 'Время вышло — экзамен завершён автоматически.' : 'Экзамен завершён вручную.'}</p>`;
-  renderWeakTopics(result.weakTopics || []);
-  egeDetails.innerHTML = (result.questions || []).map((q, i) => `
-    <article class="card-item ${q.isCorrect ? 'correct-answer' : 'wrong-answer'}">
-      <div class="card-main">
-        <strong>${i + 1}. ${escapeHtml(q.question)}</strong>
-        <span>${q.isCorrect ? '✅ Верно' : '❌ Ошибка'}</span>
-      </div>
-      <div class="muted exam-prompt">${escapeHtml(q.prompt)}</div>
-      <div class="card-meta"><span><strong>Твой ответ:</strong> ${escapeHtml(q.answer || 'нет ответа')}</span></div>
-      <div class="card-meta"><span><strong>Правильный ответ:</strong> ${escapeHtml(q.correct)}</span></div>
-      <div class="muted"><strong>Пояснение:</strong> ${escapeHtml(q.explanation || '')}</div>
-    </article>`).join('');
+    <article class="stat-card"><strong>${correct}/${total}</strong><span>правильных ответов</span></article>
+    <article class="stat-card"><strong>${percent}%</strong><span>результат</span></article>
+    <article class="stat-card"><strong>${mark}</strong><span>оценка</span></article>
+    <article class="stat-card"><strong>${expired ? 'Таймер' : 'Кнопка'}</strong><span>${expired ? 'время закончилось' : 'тест завершён'}</span></article>
+  `;
+
+  const weakTopics = result.weakTopics || [];
+  egeWeakTopics.innerHTML = weakTopics.length
+    ? weakTopics.map((topic) => `<div class="weak-item">• ${escapeHtml(topic)}</div>`).join('')
+    : '<p class="muted">Слабые темы не выявлены. Отличная работа!</p>';
+
+  const questions = result.questions || [];
+  const answers = result.answers || [];
+  egeDetails.innerHTML = questions.map((q, i) => {
+    const userAnswer = answers[i] || '';
+    const right = q.correct || q.answer || '';
+    const ok = isEgeAnswerCorrect(q, userAnswer);
+    return `
+      <article class="card-item ${ok ? 'answer-correct' : 'answer-wrong'}">
+        <div class="card-main">
+          <strong>${i + 1}. ${escapeHtml(q.question || q.prompt || 'Вопрос')}</strong>
+          <span>${escapeHtml(q.prompt || '')}</span>
+        </div>
+        <div class="result-answer-row">
+          <div><b>Твой ответ:</b> ${escapeHtml(userAnswer || 'нет ответа')}</div>
+          <div><b>Правильный ответ:</b> ${escapeHtml(right)}</div>
+        </div>
+        <div class="muted">${escapeHtml(q.explanation || q.note || 'Пояснение отсутствует: ориентируйтесь на правильный вариант и добавленное правило.')}</div>
+      </article>
+    `;
+  }).join('');
 }
-loadResult();
+
+async function init() {
+  const response = await chrome.runtime.sendMessage({ type: 'GET_EGE_EXAM_RESULT' });
+  renderResult(response?.result || response || null);
+}
+
+document.getElementById('openTrainingFromResultsBtn')?.addEventListener('click', async () => {
+  await chrome.runtime.sendMessage({ type: 'OPEN_TRAINING_SESSION', mode: 'all', count: 10 });
+});
+
+document.getElementById('openТренажёрFromResultsBtn')?.addEventListener('click', () => {
+  window.open('popup.html', '_blank', 'noopener,noreferrer');
+});
+
+init();

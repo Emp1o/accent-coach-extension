@@ -3,14 +3,15 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Тренировка — Accent Coach</title>
+    <title>Тренировка — ОрфоДракон</title>
     <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="dragon-v3.css" />
   </head>
   <body>
     <main class="container wide training-shell">
       <section class="hero-card slim">
         <div>
-          <p class="eyebrow">Duolingo-style тренировка</p>
+          <p class="eyebrow">игровой учебный формат тренировка</p>
           <h1>Тренировка карточек</h1>
           <p class="hero-copy">Открывай карточки по одной, переворачивай ответ и отмечай: помню или не помню.</p>
         </div>
@@ -25,6 +26,18 @@
           <span id="trainingCounter">0 / 0</span>
           <span id="trainingModeLabel" class="badge">все карточки</span>
           <span id="trainingXp" class="badge">XP: 0</span>
+        </div>
+      </section>
+
+      <section id="trainingBossArena" class="training-boss-arena boss-mixed">
+        <div id="trainingBossVisual" class="training-boss-visual boss-mixed" aria-hidden="true"></div>
+        <div class="training-boss-info">
+          <div class="panel-header compact">
+            <h2 id="trainingBossTitle">Босс ошибок</h2>
+            <span id="trainingBossDamage" class="boss-damage-pop" hidden>-25 HP</span>
+          </div>
+          <div class="boss-health-bar"><div id="trainingBossHpBar" class="boss-health-fill"></div></div>
+          <p id="trainingBossHpText" class="mini-help">HP: —</p>
         </div>
       </section>
 
@@ -63,5 +76,6 @@
       </section>
     </main>
     <script src="training.js"></script>
+      <script src="dragon-ui.js"></script>
   </body>
 </html>

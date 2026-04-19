@@ -3,16 +3,18 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Настройки — Accent Coach</title>
+    <title>Настройки — ОрфоДракон</title>
     <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="dragon-v3.css" />
   </head>
   <body>
     <main class="container wide">
       <section class="hero-card slim">
         <div>
           <p class="eyebrow">Настройки тренажёра</p>
-          <h1>Настройки Accent Coach</h1>
+          <h1>Настройки ОрфоДракон</h1>
         </div>
+        <button id="openTrainerFromOptionsBtn" class="primary" type="button">🐉 Открыть тренажёр</button>
       </section>
       <form id="settingsForm" class="form-grid panel">
         <label>
@@ -48,6 +50,10 @@
           <input name="reviewBatchSize" type="number" min="5" max="50" step="1" />
         </label>
         <label>
+          Размер текста интерфейса
+          <input name="textScale" type="number" min="0.75" max="1.35" step="0.05" />
+        </label>
+        <label>
           Включить всплывающую плашку (1/0)
           <input name="overlayEnabled" type="number" min="0" max="1" step="1" />
         </label>
@@ -61,13 +67,45 @@
         </label>
         <div class="actions full-row">
           <button type="submit">Сохранить</button>
-          <button type="button" id="importBtn" class="secondary">Импортировать</button>
+          <button type="button" id="importBtn" class="secondary">Импортировать JSON-словарь</button>
+          <button type="button" id="importStressPdfBtn" class="secondary">Импорт PDF с ударениями</button>
+          <button type="button" id="importPunctuationPdfBtn" class="secondary">Импорт PDF с запятыми</button>
         </div>
       </form>
+
+      <section class="panel dragon-skins-panel">
+        <div class="panel-header">
+          <h2>Скины дракона</h2>
+          <span class="badge">кастомизация</span>
+        </div>
+        <p class="muted">Выбирай внешний вид маскота. Новые скины могут выпадать из сундука после закрытия дневной цели.</p>
+        <div id="mascotSkinsPanel" class="skin-grid"></div>
+      </section>
+
+
+      <section class="panel">
+        <div class="panel-header">
+          <h2>Скины дракона</h2>
+          <span class="badge">награды</span>
+        </div>
+        <p class="muted">Базовые роли уже открыты: Огненный король, Обсидиановый босс и Ледяной мудрец. Остальные скины могут выпадать из сундука после закрытия дневной цели.</p>
+        <div id="dragonSkinGrid" class="dragon-skin-grid"></div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <h2>PDF-импорт учебных словарей</h2>
+          <span class="badge">для учителя</span>
+        </div>
+        <p class="muted">Можно загрузить PDF со словами или предложениями, записанными в столбик. Для ударений используйте заглавную гласную как знак ударения: например, звонИт, красИвее, тОрты. Для запятых каждое предложение должно быть уже записано с правильными запятыми: в карточку попадёт вариант без запятых и ответ с запятыми.</p>
+      </section>
+
       <input id="fileInput" type="file" accept="application/json" hidden />
-      <p class="muted">Импорт и экспорт работают в режиме «только словарь»: передаются только карточки и учебные записи. XP, рейтинг, серия дней, достижения и личная статистика не импортируются.</p>
-      <p id="status" class="muted"></p>
+      <input id="stressPdfInput" type="file" accept="application/pdf,.pdf" hidden />
+      <input id="punctuationPdfInput" type="file" accept="application/pdf,.pdf" hidden />
+      <p id="status" class="inline-status dragon-status options-status" aria-live="polite" hidden></p>
     </main>
     <script src="options.js"></script>
+      <script src="dragon-ui.js"></script>
   </body>
 </html>

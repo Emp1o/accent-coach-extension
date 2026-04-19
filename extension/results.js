@@ -61,7 +61,7 @@ function renderWord(data) {
   setText('originalText', data?.word || '');
   setText('accentedText', data?.stressed || '');
   if (data?.word) {
-    setHtml('resolvedWords', `<article class="card-item"><div class="card-main"><strong>${escapeHtml(data.word)}</strong><span>${escapeHtml(data.stressed || '')}</span></div><div class="card-meta"><span>Источник: ${escapeHtml(data.source || 'unknown')}</span></div></article>`);
+    setHtml('resolvedWords', `<article class="card-item"><div class="card-main"><strong>${escapeHtml(data.word)}</strong><span>${escapeHtml(data.stressed || '')}</span></div><div class="card-meta"><span>Источник: ${escapeHtml(data.source || 'не указан')}</span></div></article>`);
   } else {
     setHtml('resolvedWords', '<p class="muted">Нет данных для одного слова.</p>');
   }
@@ -99,7 +99,7 @@ function renderAccentText(data) {
           <strong>${escapeHtml(item.word)}</strong>
           <span>${escapeHtml(item.stressed || '')}</span>
         </div>
-        <div class="card-meta"><span>Источник: ${escapeHtml(item.source || 'unknown')}</span></div>
+        <div class="card-meta"><span>Источник: ${escapeHtml(item.source || 'не указан')}</span></div>
       </article>`).join(''));
   }
   const unresolved = (data?.unresolvedWords || []).map((x) => typeof x === 'string' ? x : `${x.word || ''} → ${x.stressed || ''}`);
@@ -112,8 +112,8 @@ function renderEmpty(view) {
     punctuation: 'Не удалось получить результат пунктуации. Попробуй обработать текст ещё раз.',
     accent: 'Не удалось получить результат по ударениям. Попробуй обработать текст ещё раз.'
   };
-  setPlain('unresolvedWords', map[view] || 'Нет данных.');
-  setHtml('resolvedWords', '<p class="muted">Нет данных.</p>');
+  setPlain('unresolvedWords', map[view] || 'Данные пока не накоплены.');
+  setHtml('resolvedWords', '<p class="muted">Данные пока не накоплены.</p>');
 }
 
 async function init() {

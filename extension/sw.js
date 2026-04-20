@@ -48,6 +48,7 @@ const DEFAULT_PROFILE = {
   dailyProgressDay: '',
   dailyMissionDay: '',
   dailyGoalHits: 0,
+  dailyGoalRewardedDay: '',
   chestClaimedDay: '',
   missionsCompleted: 0,
   unlockedMascotSkins: ['dragon_king', 'dragon_boss', 'dragon_sage'],
@@ -62,6 +63,7 @@ const DEFAULT_PROFILE = {
 
 
 const DRAGON_SKINS = ['dragon_academy','dragon_ege','dragon_gold','dragon_forest','dragon_storm','dragon_crystal','dragon_shadow'];
+const SELECTABLE_MASCOT_SKINS = ['dragon_king','dragon_boss','dragon_sage', ...DRAGON_SKINS];
 function pickLockedDragonSkin(profile) {
   const unlocked = new Set([...(profile.unlockedMascotSkins || []), 'dragon_king', 'dragon_boss', 'dragon_sage']);
   const locked = DRAGON_SKINS.filter((skin) => !unlocked.has(skin));
@@ -70,12 +72,9 @@ function pickLockedDragonSkin(profile) {
 }
 
 
-const BOSS_SKINS = ['dragon_boss', 'dragon_forest', 'dragon_storm', 'dragon_crystal', 'dragon_shadow', 'dragon_ege'];
-function normalizeBossSkin(skin) {
-  return BOSS_SKINS.includes(skin) ? skin : 'dragon_boss';
-}
 function randomBossSkin() {
-  return BOSS_SKINS[Math.floor(Math.random() * BOSS_SKINS.length)];
+  const skins = ['dragon_boss', 'dragon_forest', 'dragon_storm', 'dragon_crystal', 'dragon_shadow', 'dragon_ege'];
+  return skins[Math.floor(Math.random() * skins.length)];
 }
 
 function bossMaxHpForStage(stage) {
@@ -91,7 +90,7 @@ function normalizeBossProfile(profile, variant = 'mixed') {
   if (profile.bossMaxHp !== targetMax) profile.bossMaxHp = targetMax;
   profile.bossHp = Number(profile.bossHp || profile.bossMaxHp);
   profile.bossHp = Math.min(profile.bossMaxHp, Math.max(0, profile.bossHp));
-  profile.bossSkin = normalizeBossSkin(profile.bossSkin || 'dragon_boss');
+  profile.bossSkin = profile.bossSkin || 'dragon_boss';
   profile.bossVariant = variant || profile.bossVariant || 'mixed';
   profile.bossLastDamage = Number(profile.bossLastDamage || 0);
   return profile;
@@ -690,21 +689,21 @@ async function addXp(points) {
 }
 async function setMascotSkin(skin) {
   const profile = await getProfile();
+  const normalizedSkin = SELECTABLE_MASCOT_SKINS.includes(skin) ? skin : 'dragon_king';
   const unlocked = new Set([...(profile.unlockedMascotSkins || []), 'dragon_king', 'dragon_boss', 'dragon_sage']);
-  if (!unlocked.has(skin)) return { ok: false, reason: 'skin_locked' };
-  profile.selectedMascotSkin = skin;
+  if (!unlocked.has(normalizedSkin)) return { ok: false, reason: 'skin_locked' };
+  profile.selectedMascotSkin = normalizedSkin;
   await saveProfile(profile);
-  return { ok: true, selectedMascotSkin: skin };
+  return { ok: true, selectedMascotSkin: normalizedSkin };
 }
 
 async function claimDailyChest() {
-  const profile = await getProfile();
-  rollDailyProgress(profile);
+  const profile = await ensureDailyProgress();
   const settings = await getSettings();
   const today = dayKey();
-  const goalTarget = missionTarget(Number(settings.dailyGoal || 10), profile);
+  const goalTarget = dailyGoalTarget(settings, profile);
   const goalReached = Number(profile.rememberedToday || 0) >= goalTarget;
-  if (!goalReached) return { ok: false, reason: 'goal_not_reached' };
+  if (!goalReached) return { ok: false, reason: 'goal_not_reached', progress: Number(profile.rememberedToday || 0), target: goalTarget };
   if (isSameDay(profile.chestClaimedDay, today)) return { ok: false, reason: 'already_claimed' };
   profile.chestClaimedDay = today;
   profile.missionsCompleted = Number(profile.missionsCompleted || 0) + 1;
@@ -765,11 +764,15 @@ function missionTarget(baseTarget, profile) {
   return safeBase + missionDifficultyBonus(profile);
 }
 
+function dailyGoalTarget(settings, profile) {
+  return missionTarget(Number(settings?.dailyGoal || DEFAULT_SETTINGS.dailyGoal), profile);
+}
+
 function missionsFromState(profile, cards, settings) {
   rollDailyProgress(profile);
   const rememberedToday = Number(profile.rememberedToday || 0);
   const baseDailyGoal = Number(settings.dailyGoal || 10);
-  const dailyGoal = missionTarget(baseDailyGoal, profile);
+  const dailyGoal = dailyGoalTarget(settings, profile);
   const seed = numericDaySeed(profile.dailyMissionDay || dayKey());
   const variants = [
     {
@@ -871,10 +874,12 @@ async function gradeCard(id, result) {
     profile.totalCorrect += 1;
     profile.rememberedToday = Number(profile.rememberedToday || 0) + 1;
     const settingsNow = await getSettings();
-    if (profile.rememberedToday >= Number(settingsNow.dailyGoal || 10) && profile.dailyGoalRewardedDay !== dayKey()) {
-      profile.dailyGoalHits += 1;
+    const targetToday = dailyGoalTarget(settingsNow, profile);
+    if (profile.rememberedToday >= targetToday && profile.dailyGoalRewardedDay !== dayKey()) {
+      profile.dailyGoalHits = Number(profile.dailyGoalHits || 0) + 1;
       profile.dailyGoalRewardedDay = dayKey();
-      await addXp(20);
+      profile.xp = Number(profile.xp || 0) + 20;
+      profile.level = Math.floor(Number(profile.xp || 0) / 100) + 1;
     }
   }
   await saveProfile(profile);
@@ -1317,7 +1322,7 @@ async function getStateSnapshot() {
   const settings = await getSettings();
   const profile = await ensureDailyProgress();
   const items = Object.values(cards).sort((a,b)=>b.updatedAt-a.updatedAt);
-  const dailyGoal = missionTarget(Number(settings.dailyGoal || 10), profile);
+  const dailyGoal = dailyGoalTarget(settings, profile);
   const dueNow = items.filter((x)=>x.dueAt<=Date.now());
   const favorites = items.filter((x)=>x.favorite);
   const rating = Math.round(profile.xp + profile.totalCorrect * 5);

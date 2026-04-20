@@ -33,33 +33,6 @@ const accentTextCardStatus = document.getElementById("accentTextCardStatus");
 const accentFavoriteStatus = document.getElementById("accentFavoriteStatus");
 const punctuationFavoriteStatus = document.getElementById("punctuationFavoriteStatus");
 
-const BOSS_SKIN_CLASSES = ['skin-boss', 'skin-forest', 'skin-storm', 'skin-crystal', 'skin-shadow', 'skin-ege'];
-const BOSS_SKIN_ASSETS = {
-  dragon_boss: 'assets/dragon-boss.svg',
-  dragon_forest: 'assets/dragon-forest.svg',
-  dragon_storm: 'assets/dragon-storm.svg',
-  dragon_crystal: 'assets/dragon-crystal.svg',
-  dragon_shadow: 'assets/dragon-shadow.svg',
-  dragon_ege: 'assets/dragon-ege.svg'
-};
-const BOSS_SKIN_CLASS_BY_ID = {
-  dragon_boss: 'skin-boss',
-  dragon_forest: 'skin-forest',
-  dragon_storm: 'skin-storm',
-  dragon_crystal: 'skin-crystal',
-  dragon_shadow: 'skin-shadow',
-  dragon_ege: 'skin-ege'
-};
-
-function applyBossSkin(node, skin = 'dragon_boss') {
-  if (!node) return;
-  const safeSkin = BOSS_SKIN_ASSETS[skin] ? skin : 'dragon_boss';
-  node.classList.remove(...BOSS_SKIN_CLASSES);
-  node.classList.add(BOSS_SKIN_CLASS_BY_ID[safeSkin]);
-  node.dataset.bossSkin = safeSkin;
-  node.style.setProperty('background-image', `url("${BOSS_SKIN_ASSETS[safeSkin]}")`, 'important');
-}
-
 function switchTab(tab) {
   const accentActive = tab === 'accent';
   accentTab.hidden = !accentActive;
@@ -136,23 +109,26 @@ function renderStats(stats) {
 
 
 
+const DRAGON_SKIN_CLASSES = ['skin-king','skin-boss','skin-sage','skin-academy','skin-ege','skin-gold','skin-forest','skin-storm','skin-crystal','skin-shadow'];
+
+const DRAGON_SKIN_CLASS_BY_ID = {
+  dragon_king: 'skin-king',
+  dragon_boss: 'skin-boss',
+  dragon_sage: 'skin-sage',
+  dragon_academy: 'skin-academy',
+  dragon_ege: 'skin-ege',
+  dragon_gold: 'skin-gold',
+  dragon_forest: 'skin-forest',
+  dragon_storm: 'skin-storm',
+  dragon_crystal: 'skin-crystal',
+  dragon_shadow: 'skin-shadow'
+};
+
 function applySelectedDragonSkin(profile = {}) {
   const skin = profile.selectedMascotSkin || 'dragon_king';
-  const allSkinClasses = ['skin-king','skin-boss','skin-sage','skin-academy','skin-ege','skin-gold','skin-forest','skin-storm','skin-crystal','skin-shadow'];
   document.querySelectorAll('.dragon-mini, .dragon-mascot').forEach((node) => {
-    node.classList.remove(...allSkinClasses);
-    const cls = {
-      dragon_king: 'skin-king',
-      dragon_boss: 'skin-boss',
-      dragon_sage: 'skin-sage',
-      dragon_academy: 'skin-academy',
-      dragon_ege: 'skin-ege',
-      dragon_gold: 'skin-gold',
-      dragon_forest: 'skin-forest',
-      dragon_storm: 'skin-storm',
-      dragon_crystal: 'skin-crystal',
-      dragon_shadow: 'skin-shadow'
-    }[skin] || 'skin-king';
+    node.classList.remove(...DRAGON_SKIN_CLASSES);
+    const cls = DRAGON_SKIN_CLASS_BY_ID[skin] || 'skin-king';
     node.classList.add(cls);
   });
 }
@@ -174,9 +150,10 @@ function renderDragonBoss(stats = {}, gamification = {}) {
     arena.classList.add(`boss-${variant}`);
   }
   if (boss) {
-    boss.classList.remove('boss-stress', 'boss-punctuation', 'boss-mixed', 'damage');
+    boss.classList.remove('boss-stress', 'boss-punctuation', 'boss-mixed', 'damage', 'skin-boss', 'skin-forest', 'skin-storm', 'skin-crystal', 'skin-shadow', 'skin-ege');
     boss.classList.add(`boss-${variant}`);
-    applyBossSkin(boss, skin);
+    const skinClass = {dragon_boss:'skin-boss', dragon_forest:'skin-forest', dragon_storm:'skin-storm', dragon_crystal:'skin-crystal', dragon_shadow:'skin-shadow', dragon_ege:'skin-ege'}[skin] || 'skin-boss';
+    boss.classList.add(skinClass);
   }
 
   const title = variant === 'stress'

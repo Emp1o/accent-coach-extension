@@ -975,8 +975,8 @@ button.ghost, .ghost {
 }
 .dragon-mini.skin-king,
 .dragon-mascot.skin-king,
-.dragon-mini:not(.skin-boss):not(.skin-sage):not(.skin-academy):not(.skin-ege):not(.skin-gold),
-.dragon-mascot:not(.skin-boss):not(.skin-sage):not(.skin-academy):not(.skin-ege):not(.skin-gold) {
+.dragon-mini:not(.skin-boss):not(.skin-sage):not(.skin-academy):not(.skin-ege):not(.skin-gold):not(.skin-forest):not(.skin-storm):not(.skin-crystal):not(.skin-shadow),
+.dragon-mascot:not(.skin-boss):not(.skin-sage):not(.skin-academy):not(.skin-ege):not(.skin-gold):not(.skin-forest):not(.skin-storm):not(.skin-crystal):not(.skin-shadow) {
   background-image: url("assets/dragon-king.svg") !important;
   filter: drop-shadow(0 18px 26px rgba(216, 32, 24, .46)) saturate(1.38) !important;
 }
@@ -1472,23 +1472,43 @@ body {
 
 
 
+/* FINAL SKIN SYNC FIX: all selectable mascot skins must override fallback defaults. */
+.skin-dragon.skin-king,
+.dragon-mini.skin-king,
+.dragon-mascot.skin-king { background-image:url("assets/dragon-king.svg") !important; }
 
-/* FINAL BOSS SKIN SYNC — one boss skin everywhere: popup, training, EGE exam/results. */
-.dragon-boss-visual,
-.training-boss-visual {
-  background-size: contain !important;
-  background-repeat: no-repeat !important;
-  background-position: center !important;
-}
-.dragon-boss-visual.skin-boss,
-.training-boss-visual.skin-boss { background-image: url("assets/dragon-boss.svg") !important; }
-.dragon-boss-visual.skin-forest,
-.training-boss-visual.skin-forest { background-image: url("assets/dragon-forest.svg") !important; }
-.dragon-boss-visual.skin-storm,
-.training-boss-visual.skin-storm { background-image: url("assets/dragon-storm.svg") !important; }
-.dragon-boss-visual.skin-crystal,
-.training-boss-visual.skin-crystal { background-image: url("assets/dragon-crystal.svg") !important; }
-.dragon-boss-visual.skin-shadow,
-.training-boss-visual.skin-shadow { background-image: url("assets/dragon-shadow.svg") !important; }
-.dragon-boss-visual.skin-ege,
-.training-boss-visual.skin-ege { background-image: url("assets/dragon-ege.svg") !important; }
+.skin-dragon.skin-boss,
+.dragon-mini.skin-boss,
+.dragon-mascot.skin-boss { background-image:url("assets/dragon-boss.svg") !important; }
+
+.skin-dragon.skin-sage,
+.dragon-mini.skin-sage,
+.dragon-mascot.skin-sage { background-image:url("assets/dragon-ice.svg") !important; }
+
+.skin-dragon.skin-academy,
+.dragon-mini.skin-academy,
+.dragon-mascot.skin-academy { background-image:url("assets/dragon-academy.svg") !important; }
+
+.skin-dragon.skin-ege,
+.dragon-mini.skin-ege,
+.dragon-mascot.skin-ege { background-image:url("assets/dragon-ege.svg") !important; }
+
+.skin-dragon.skin-gold,
+.dragon-mini.skin-gold,
+.dragon-mascot.skin-gold { background-image:url("assets/dragon-gold.svg") !important; }
+
+.skin-dragon.skin-forest,
+.dragon-mini.skin-forest,
+.dragon-mascot.skin-forest { background-image:url("assets/dragon-forest.svg") !important; }
+
+.skin-dragon.skin-storm,
+.dragon-mini.skin-storm,
+.dragon-mascot.skin-storm { background-image:url("assets/dragon-storm.svg") !important; }
+
+.skin-dragon.skin-crystal,
+.dragon-mini.skin-crystal,
+.dragon-mascot.skin-crystal { background-image:url("assets/dragon-crystal.svg") !important; }
+
+.skin-dragon.skin-shadow,
+.dragon-mini.skin-shadow,
+.dragon-mascot.skin-shadow { background-image:url("assets/dragon-shadow.svg") !important; }

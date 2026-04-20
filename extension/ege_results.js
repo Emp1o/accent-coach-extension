@@ -11,33 +11,6 @@ const egeWeakTopics = document.getElementById('egeWeakTopics');
 const egeDetails = document.getElementById('egeDetails');
 const egeResultStatus = document.getElementById('egeResultStatus');
 
-const BOSS_SKIN_CLASSES = ['skin-boss', 'skin-forest', 'skin-storm', 'skin-crystal', 'skin-shadow', 'skin-ege'];
-const BOSS_SKIN_ASSETS = {
-  dragon_boss: 'assets/dragon-boss.svg',
-  dragon_forest: 'assets/dragon-forest.svg',
-  dragon_storm: 'assets/dragon-storm.svg',
-  dragon_crystal: 'assets/dragon-crystal.svg',
-  dragon_shadow: 'assets/dragon-shadow.svg',
-  dragon_ege: 'assets/dragon-ege.svg'
-};
-const BOSS_SKIN_CLASS_BY_ID = {
-  dragon_boss: 'skin-boss',
-  dragon_forest: 'skin-forest',
-  dragon_storm: 'skin-storm',
-  dragon_crystal: 'skin-crystal',
-  dragon_shadow: 'skin-shadow',
-  dragon_ege: 'skin-ege'
-};
-
-function applyBossSkin(node, skin = 'dragon_boss') {
-  if (!node) return;
-  const safeSkin = BOSS_SKIN_ASSETS[skin] ? skin : 'dragon_boss';
-  node.classList.remove(...BOSS_SKIN_CLASSES);
-  node.classList.add(BOSS_SKIN_CLASS_BY_ID[safeSkin]);
-  node.dataset.bossSkin = safeSkin;
-  node.style.setProperty('background-image', `url("${BOSS_SKIN_ASSETS[safeSkin]}")`, 'important');
-}
-
 function bossTitle(variant) {
   if (variant === 'stress') return 'Босс ударений';
   if (variant === 'punctuation') return 'Босс запятых';
@@ -68,9 +41,10 @@ async function renderEgeBoss(result) {
     arena.classList.add(`boss-${variant}`);
   }
   if (visual) {
-    visual.classList.remove('boss-stress', 'boss-punctuation', 'boss-mixed', 'damage');
+    visual.classList.remove('boss-stress', 'boss-punctuation', 'boss-mixed', 'skin-boss', 'skin-forest', 'skin-storm', 'skin-crystal', 'skin-shadow', 'skin-ege');
     visual.classList.add(`boss-${variant}`, 'damage');
-    applyBossSkin(visual, boss.bossSkin || 'dragon_boss');
+    const skinClass = {dragon_boss:'skin-boss', dragon_forest:'skin-forest', dragon_storm:'skin-storm', dragon_crystal:'skin-crystal', dragon_shadow:'skin-shadow', dragon_ege:'skin-ege'}[boss.bossSkin || 'dragon_boss'] || 'skin-boss';
+    visual.classList.add(skinClass);
   }
   if (title) title.textContent = `${bossTitle(variant)} · урон за ЕГЭ`;
   if (pop) {

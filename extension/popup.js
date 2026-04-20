@@ -187,6 +187,64 @@ function showChestRewardStatus(message, variant = 'success') {
   }, 7000);
 }
 
+
+const LEAGUE_STEP_LEVELS_POPUP = 7;
+const LEAGUE_TIERS_POPUP = [
+  'Бронзовый Орфомастер',
+  'Серебряный Орфомастер',
+  'Золотой Орфомастер',
+  'Платиновый Орфомастер',
+  'Изумрудный Орфомастер'
+];
+const ROMAN_NUMERALS_POPUP = [
+  '', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X',
+  'XI', 'XII', 'XIII', 'XIV', 'XV', 'XVI', 'XVII', 'XVIII', 'XIX', 'XX'
+];
+
+function romanNumberPopup(value) {
+  const n = Math.max(1, Math.floor(Number(value || 1)));
+  if (n < ROMAN_NUMERALS_POPUP.length) return ROMAN_NUMERALS_POPUP[n];
+  const pairs = [
+    [1000, 'M'], [900, 'CM'], [500, 'D'], [400, 'CD'],
+    [100, 'C'], [90, 'XC'], [50, 'L'], [40, 'XL'],
+    [10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']
+  ];
+  let left = n;
+  let out = '';
+  for (const [num, mark] of pairs) {
+    while (left >= num) {
+      out += mark;
+      left -= num;
+    }
+  }
+  return out || 'I';
+}
+
+function leagueForLevelPopup(level) {
+  const safeLevel = Math.max(1, Math.floor(Number(level || 1)));
+  const leagueIndex = Math.floor((safeLevel - 1) / LEAGUE_STEP_LEVELS_POPUP);
+  const baseName = LEAGUE_TIERS_POPUP[Math.min(leagueIndex, LEAGUE_TIERS_POPUP.length - 1)];
+  if (leagueIndex < LEAGUE_TIERS_POPUP.length - 1) return baseName;
+  const diamondType = leagueIndex - LEAGUE_TIERS_POPUP.length + 2;
+  return `Алмазный Орфомастер ${romanNumberPopup(diamondType)}`;
+}
+
+function leagueSlug(leagueName = '') {
+  const name = String(leagueName).toLowerCase();
+  if (name.includes('алмаз')) return 'diamond';
+  if (name.includes('изумруд')) return 'emerald';
+  if (name.includes('платин')) return 'platinum';
+  if (name.includes('золот')) return 'gold';
+  if (name.includes('серебр')) return 'silver';
+  return 'bronze';
+}
+
+function resolvedLeagueName(bundle = {}) {
+  const raw = String(bundle?.gamification?.league || '').trim();
+  if (raw) return raw;
+  return leagueForLevelPopup(bundle?.stats?.level || bundle?.profile?.level || 1);
+}
+
 function renderGamification(bundle) {
   const g = bundle?.gamification || {};
   const stats = bundle?.stats || {};
@@ -198,9 +256,11 @@ function renderGamification(bundle) {
   const trainWeakSpotsBtn = document.getElementById('trainWeakSpotsBtn');
 
   const progressPct = Math.min(100, Math.round(((g.rememberedToday || 0) / (g.dailyGoal || 10)) * 100));
+  const leagueName = resolvedLeagueName(bundle);
+  const leagueClass = leagueSlug(leagueName);
   if (leaguePanel) {
     leaguePanel.innerHTML = `
-      <div class="gamify-row"><strong>Лига:</strong> <span class="league-chip league-${(g.league || 'Бронза').toLowerCase()}">${g.league || 'Бронза'}</span></div>
+      <div class="gamify-row"><strong>Лига:</strong> <span class="league-chip league-chip--${leagueClass}">${escapeHtml(leagueName)}</span></div>
       <div class="gamify-row"><strong>День:</strong> ${escapeHtml(g.dailyProgressDay || '')}</div>
       <div class="gamify-row"><strong>Сегодня:</strong> ${g.rememberedToday || 0}/${g.dailyGoal || 10}</div>
       <div class="progress progress--animated"><span style="width:${progressPct}%"></span></div>
@@ -705,102 +765,6 @@ document.getElementById("startTrainingQuickBtn")?.addEventListener("click", asyn
 });
 
 
-
-function punctuate(text) {
-  let t = text;
-  const rules = [];
-
-  const apply = (pattern, replacement, note) => {
-    const next = t.replace(pattern, replacement);
-    if (next !== t) {
-      t = next;
-      rules.push(note);
-    }
-  };
-
-  // сложные союзы
-  apply(/\s+(потому что)\b/gi, ', $1', "Запятая перед 'потому что'");
-  apply(/\s+(так как)\b/gi, ', $1', "Запятая перед 'так как'");
-  apply(/\s+(несмотря на то что)\b/gi, ', $1', "Запятая перед 'несмотря на то что'");
-  apply(/\s+(в то время как)\b/gi, ', $1', "Запятая перед 'в то время как'");
-
-  // базовые союзы
-  apply(/\s+(что|чтобы|если|когда|хотя|пока)\b/gi, ', $1', "Запятая перед союзом");
-
-  // противительные
-  apply(/\s+(но|а|однако|зато)\s+/gi, ', $1 ', "Запятая перед противительным союзом");
-
-  // вводные слова
-  apply(/(^|\s)(конечно|наверное|возможно|кстати|во-первых|во-вторых)(\s)/gi, '$1$2,$3', "Вводное слово");
-
-  // деепричастия (очень грубо)
-  apply(/(\w+я)(\s+)/gi, '$1,$2', "Деепричастный оборот");
-
-  t = t.replace(/\s+,/g, ',').replace(/,{2,}/g, ',');
-  return { result: t, explanation: rules.join('; ') };
-}
-
-
-
-function punctuate(text) {
-  let t = text;
-  const rules = [];
-
-  const apply = (pattern, replacement, note) => {
-    const next = t.replace(pattern, replacement);
-    if (next !== t) {
-      t = next;
-      rules.push(note);
-    }
-  };
-
-  // 1. СПП (придаточные)
-  apply(/\s+(что|чтобы|если|когда|потому что|так как|хотя|пока|где|который|когда)\b/gi,
-        ', $1',
-        "Запятая в сложноподчинённом предложении");
-
-  // 2. Противительные союзы
-  apply(/\s+(но|а|однако|зато|да)\s+/gi,
-        ', $1 ',
-        "Запятая перед противительным союзом");
-
-  // 3. Однородные члены (очень базово)
-  apply(/(\w+)\s+(и|или|либо)\s+(\w+)/gi,
-        '$1, $2 $3',
-        "Запятая между однородными членами (упрощённо)");
-
-  // 4. Вводные слова
-  apply(/(^|\s)(конечно|наверное|возможно|кстати|во-первых|во-вторых|например)(\s)/gi,
-        '$1$2,$3',
-        "Вводное слово");
-
-  // 5. Причастные обороты
-  apply(/(\w+)(\s+)(который\s+[^,.]+)/gi,
-        '$1,$2$3,',
-        "Причастный оборот");
-
-  // 6. Деепричастные обороты
-  apply(/(\w+я)(\s+)(\w+)/gi,
-        '$1,$2$3',
-        "Деепричастный оборот");
-
-  // 7. Уточнения
-  apply(/(\w+)(\s+)(то есть|а именно|например)(\s+)/gi,
-        '$1,$2$3,$4',
-        "Уточняющее слово");
-
-  // очистка
-  t = t
-    .replace(/\s+,/g, ',')
-    .replace(/,{2,}/g, ',')
-    .replace(/,\s+,/g, ',')
-    .replace(/^,/, '');
-
-  return {
-    result: t,
-    explanation: rules.join(' | ')
-  };
-}
 
 
 document.getElementById("startEgeExamBtn")?.addEventListener("click", async (event) => {

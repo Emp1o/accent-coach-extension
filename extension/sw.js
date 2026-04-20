@@ -683,8 +683,8 @@ function isSameDay(a, b) {
 }
 async function addXp(points) {
   const profile = await getProfile();
-  profile.xp += points;
-  profile.level = Math.floor(profile.xp / 100) + 1;
+  profile.xp = Number(profile.xp || 0) + Number(points || 0);
+  profile.level = Math.floor(Number(profile.xp || 0) / 100) + 1;
   await saveProfile(profile);
 }
 async function setMascotSkin(skin) {
@@ -1343,6 +1343,8 @@ async function getStateSnapshot() {
   };
   const league = leagueForLevel(profile.level || 1);
   const nextLeague = nextLeagueLevel(profile.level || 1);
+  stats.league = league;
+  stats.nextLeague = nextLeague;
   const weakSpots = weakSpotsForWeek(items);
   const weakCount = weakSpots.length;
   stats.weakCount = weakCount;

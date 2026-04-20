@@ -1512,3 +1512,26 @@ body {
 .skin-dragon.skin-shadow,
 .dragon-mini.skin-shadow,
 .dragon-mascot.skin-shadow { background-image:url("assets/dragon-shadow.svg") !important; }
+
+
+/* Stable league display in popup. Uses safe English slug classes, not Russian league names. */
+.league-chip{
+  display:inline-flex;
+  align-items:center;
+  max-width:100%;
+  padding:5px 10px;
+  border-radius:999px;
+  color:#172554;
+  background:linear-gradient(180deg,#fff8dc,#f6c84c);
+  border:1px solid rgba(126,87,0,.24);
+  box-shadow:0 4px 10px rgba(15,23,42,.10);
+  font-weight:900;
+  line-height:1.2;
+  vertical-align:middle;
+}
+.league-chip--bronze{background:linear-gradient(180deg,#f7dfc4,#c47b3d);color:#3b1d09}
+.league-chip--silver{background:linear-gradient(180deg,#ffffff,#cbd5e1);color:#172033}
+.league-chip--gold{background:linear-gradient(180deg,#fff2a8,#f6c84c);color:#422006}
+.league-chip--platinum{background:linear-gradient(180deg,#e0f7ff,#93c5fd);color:#0f172a}
+.league-chip--emerald{background:linear-gradient(180deg,#dcfce7,#22c55e);color:#052e16}
+.league-chip--diamond{background:linear-gradient(180deg,#e0f2fe,#60a5fa);color:#0c1f4f}
